@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@types/three": "^0.144.0",
+    "buzz": "^1.2.1",
     "dat.gui": "^0.7.9",
     "gltf": "^1.0.3",
     "gsap": "^3.11.4",

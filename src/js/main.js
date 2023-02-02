@@ -11,11 +11,15 @@ var geometry = new THREE.SphereGeometry( radius, segments, segments );
 var normalMesh = new THREE.MeshNormalMaterial();
 var boxHelper;
 
-var playerspeed = 0.8;
-var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-var normalMaterial = new THREE.MeshNormalMaterial();
-var vie = 1;
+var playerspeed = 1.5;
+var vie = 100;
 var animationPlayed = true;
+
+
+var smallennemyscore = 10;
+var mediumennemyscore = 20;
+var bigennemyscore = 30;
+
 
 var mixer, action, clip, bodyData, playerModel;
 const clock = new THREE.Clock();
@@ -29,7 +33,7 @@ var nbligne = 5;
 var nbcolonne = 10;
 var levelactuelle = [];
 var score = 0;
-var wave = 1;
+var wave = 0;
 var limgauche = 15;
 var limdroite = 15;
 
@@ -52,8 +56,8 @@ musicArray["music_ambiance"].loop();
 
 console.log(musicArray.length);
 
-var lvl1 = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+var lvl1 = [[0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]
@@ -63,10 +67,7 @@ var lvl2 = [[1, 0, 1, 0, 1, 0, 1, 0, 1, 1],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]
-levelactuelle = lvl2;
-for (let i = 0; i < nbligne; i++) {
-  tab[i] = [];
-}
+levelactuelle = lvl1;
 
 var boxGeometry = new THREE.BoxGeometry(0.3, 0.3, 1);
 var boxMaterial = new THREE.MeshNormalMaterial();
@@ -85,6 +86,56 @@ function getRandomInt(i) {
   return Math.floor(Math.random() * i);
 }
 
+
+function spawnEnnemy() {
+  wave++;
+  if (wave == 1) {
+    levelactuelle = lvl1;
+    console.log(levelactuelle);
+  }
+  else if (wave == 2) {
+    levelactuelle = lvl2;
+    console.log(levelactuelle);
+  }
+  else if (wave == 3) {
+    alert("Gagner");
+    return;
+  }
+  for (let i = 0; i < nbligne; i++) {
+    tab[i] = [];
+  }
+  for (let j = 0; j < nbligne; j++) {
+    let ecart = 0;
+    for (let i = 0; i < nbcolonne; i++) {
+      if (levelactuelle[j][i] != 0) {
+        let sphere = new THREE.Mesh( geometry, normalMesh );
+        if (i == 0) { 
+          sphere.position.set(-7.8 + ecart, 0, -j);
+        }
+        else { 
+          sphere.position.set(-7.8 + ecart, 0, -j);
+        }
+        scene.add(sphere);
+        tab[j][i] = sphere;
+
+        ecart += 3.5 * radius;
+     }
+     else {
+        tab[j][i] = 0;
+        ecart += 3.5 * radius;
+     }
+    }
+  }
+  for (let j = 0; j <= nbligne-1; j++) {
+    for (let i = 0; i <= 9; i++) {
+      if (tab[j][i] == 0) {
+        tab[j].splice(i, 1);
+        levelactuelle[j].splice(i, 1);
+      }
+    }
+  }
+
+}
 
 // Fonction pour créer un nouveau projectile
 function createProjectile() {
@@ -131,7 +182,7 @@ document.addEventListener('keydown', function(event) {
         duration: 3,
         x: 0,
         y: 20,
-        z: 0,
+        z: 5,
         onComplete: function() {
           cameraTransitionInProgress = false;
         }
@@ -195,6 +246,12 @@ document.addEventListener('keydown', function(event) {
   if (event.code == "KeyI" && started == true && !paused && tab[0].length > 0) { // Invincible
     invincible = !invincible;
     console.log(invincible);
+    if (invincible) {
+      projectilespeed = 0.6;
+    }
+    else {
+      projectilespeed = 0.2;
+    }
   }
   if (event.code == "KeyK" &&  started == true && !paused && tab[0].length > 0) { // Kill all aliens
     for (var k = 0; k < tab.length; k++){
@@ -204,6 +261,7 @@ document.addEventListener('keydown', function(event) {
       tab[k].splice(0, tab[k].length); // Retirer les sphère du tableau
       levelactuelle[k].splice(0, levelactuelle[k].length);
     }
+    spawnEnnemy();
   }
 });
 
@@ -235,7 +293,7 @@ function init() {
   var plane = new THREE.Mesh( geometryplate, materialplate );
   plane.position.set(0, -1, 0);
   plane.rotation.x = Math.PI / 2;
-  scene.add( plane );
+  //scene.add( plane );
   
 
   
@@ -243,6 +301,49 @@ function init() {
   createMenu();
   //scene.add(new THREE.AxesHelper(10))
   //scene.add(new THREE.GridHelper(20, 20))
+}
+
+function addScore(scoreennemi, i, j) {
+  // ce baser sur https://codepen.io/sureshwisdom/pen/gObavym
+  score += scoreennemi;
+  var message = "+" + scoreennemi;
+  var parameters = { fontsize: 20, textColor: {r:255, g:0, b:0, a:1.0}}
+  if ( parameters === undefined ) parameters = {};
+  var fontface = parameters.hasOwnProperty("fontface") ? parameters["fontface"] : "Courier New";
+  var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 18;
+  var borderThickness = parameters.hasOwnProperty("borderThickness") ? parameters["borderThickness"] : 4;
+  var borderColor = parameters.hasOwnProperty("borderColor") ?parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+  var textColor = parameters.hasOwnProperty("textColor") ?parameters["textColor"] : { r:255, g:0, b:0, a:1.0 };
+
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+  context.font = "Bold " + fontsize + "px " + fontface;
+  context.fillStyle = "rgba("+textColor.r+", "+textColor.g+", "+textColor.b+", 1.0)";
+  context.fillText( message, borderThickness, fontsize + borderThickness);
+
+  var texture = new THREE.Texture(canvas) 
+  texture.needsUpdate = true;
+  var spriteMaterial = new THREE.SpriteMaterial( { map: texture } );
+  var sprite = new THREE.Sprite( spriteMaterial );
+  sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
+  if (quelcamera == 2) {
+    sprite.position.set(tab[i][j].position.x + 3, tab[i][j].position.y, tab[i][j].position.z - 3.5);
+  }
+  else {
+    sprite.position.set(tab[i][j].position.x + 4.5, tab[i][j].position.y, tab[i][j].position.z);
+  }
+  scene.add(sprite);
+  gsap.to(sprite.position, {
+    duration: 1,
+    x: sprite.position.x,
+    y: sprite.position.y + 1,
+    z: sprite.position.z,
+    ease: "linear",
+    onComplete: function() {
+      scene.remove(sprite);
+    }
+  });
+  //return sprite;
 }
 
 function animate() {
@@ -292,16 +393,16 @@ function animate() {
         for (let j = 0; j < tab[k].length; j++) {
           if (tab[k][j] != undefined) {
             if (projectiles[i].position.distanceTo(tab[k][j].position) <= radius * 1.5) {
-                if (levelactuelle[k][j] == 1) score += 10;
-                else if (levelactuelle[k][j] == 2) score += 20;
-                else if (levelactuelle[k][j] == 3) score += 30;
+                if (levelactuelle[k][j] == 1) addScore(smallennemyscore, k, j);
+                else if (levelactuelle[k][j] == 2) addScore(mediumennemyscore, k, j);
+                else if (levelactuelle[k][j] == 3) addScore(bigennemyscore, k, j);
                 console.log(score);
                 scene.remove(tab[k][j]); // Retirer la sphère de la scène
                 
                 if (tab[k].length == 1) {
                   if (tab.length == 1) {
                     tab[k].splice(j, 1);
-                    alert("Gagner");
+                    spawnEnnemy();
                   }
                   else {
                     tab[k].splice(j, 1); // retire la sphère du tableau
@@ -321,8 +422,8 @@ function animate() {
                 projectiles.splice(i, 1); // Retirer le projectile du tableau
                 i--;
                 //break;
-                console.log(levelactuelle);
-                console.log(tab);
+                //console.log(levelactuelle);
+                //console.log(tab);
             }
           }
         }
@@ -339,9 +440,9 @@ function animate() {
           }
         else if (projectilesEnnemy[i].position.distanceTo(playerModel.position) <= 1.5) {
             console.log("playerModel toucher");
-            if(vie >= 3) soundeffectArray["douleur_1"].play;
-            else if(vie == 2) soundeffectArray["douleur_2"].play;
-            else if(vie == 1) soundeffectArray["douleur_3"].play;
+            if(vie >= 3) soundeffectArray["douleur_1"].play();
+            else if(vie == 2) soundeffectArray["douleur_2"].play();
+            else if(vie == 1) soundeffectArray["douleur_3"].play();
             vie -= 1;
             scene.remove(projectilesEnnemy[i]);
             projectilesEnnemy.splice(i, 1);
@@ -359,7 +460,6 @@ function animate() {
       //alert("Perdu !");
       playAnimation(7);
       started = false;
-      // wait 5 second
       setTimeout(function() {
         action.paused = true;
       }, 1250);
@@ -413,40 +513,7 @@ async function initAsync() {
   console.log(playerModel);
   scene.add(playerModel);
   playAnimation(9);
-
-    for (let j = 0; j < nbligne; j++) {
-    let ecart = 0;
-    for (let i = 0; i < nbcolonne; i++) {
-      if (levelactuelle[j][i] != 0) {
-        let sphere = new THREE.Mesh( geometry, normalMesh );
-        if (i == 0) { 
-          sphere.position.set(-7.8 + ecart, 0, -j);
-        }
-        else { 
-          sphere.position.set(-7.8 + ecart, 0, -j);
-        }
-        scene.add(sphere);
-        tab[j][i] = sphere;
-        //console.log(tab);
-        //console.log(tab[i].position.x)
-        ecart += 3.5 * radius;
-     }
-     else {
-        tab[j][i] = 0;
-        //console.log(tab[j].length);
-        ecart += 3.5 * radius;
-        //console.log(tab);
-     }
-    }
-  }
-  for (let j = 0; j <= nbligne-1; j++) {
-    for (let i = 0; i <= 9; i++) {
-      if (tab[j][i] == 0) {
-        tab[j].splice(i, 1);
-        levelactuelle[j].splice(i, 1);
-      }
-    }
-  }
+  spawnEnnemy();
   console.log(tab);
   console.log(tab[0].length);
   
@@ -470,12 +537,15 @@ function playAnimation(numAnim, speed = 1) {
 
 function createMenu() {
     var creditBtn = document.createElement("BUTTON");
-    creditBtn.innerHTML = "Crédits";
+    creditBtn.innerHTML = "Stop Sound Effect";
     creditBtn.style.position = "absolute";
     creditBtn.style.top = "20px";
     creditBtn.style.left = "10px";
     creditBtn.onclick = function() {
-      alert("Crédits");
+      for(var sound in soundeffectArray){
+        soundeffectArray[sound].toggleMute();
+        console.log(soundeffectArray[sound].isMuted);
+      }
     };
     document.body.appendChild(creditBtn);
 
@@ -497,7 +567,7 @@ function createMenu() {
     document.body.appendChild(startBtn);
 
     var optionBtn = document.createElement("BUTTON");
-    optionBtn.innerHTML = "Options";
+    optionBtn.innerHTML = "Stop Music";
     optionBtn.style.position = "absolute";
     optionBtn.style.top = "20px";
     optionBtn.style.left = "8%";
