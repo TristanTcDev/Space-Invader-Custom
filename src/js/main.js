@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { gsap } from "gsap";
+import buzz from 'buzz';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -8,16 +9,15 @@ var radius = 0.5;
 var segments = 32;
 var geometry = new THREE.SphereGeometry( radius, segments, segments );
 var normalMesh = new THREE.MeshNormalMaterial();
-var playerModel;
+var boxHelper;
 
-var cubespeed = 0.8;
+var playerspeed = 0.8;
 var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 var normalMaterial = new THREE.MeshNormalMaterial();
-var cube = new THREE.Mesh(cubeGeometry, normalMaterial);
-var vie = 3;
+var vie = 1;
 var animationPlayed = true;
 
-let mixer, action, clip, bodyData;
+var mixer, action, clip, bodyData, playerModel;
 const clock = new THREE.Clock();
 const loopOn = true;
 
@@ -30,8 +30,28 @@ var nbcolonne = 10;
 var levelactuelle = [];
 var score = 0;
 var wave = 1;
+var limgauche = 15;
+var limdroite = 15;
 
-console.log(levelactuelle);
+var soundeffectArray = [];
+var soundeffectactivated = true;
+soundeffectArray["C_EST_PARTI"] = new buzz.sound("src/medias/sounds/C_EST_PARTI.mp3");
+soundeffectArray["C_EST_PARTI"].setVolume(60);
+soundeffectArray["douleur_1"] = new buzz.sound("src/medias/sounds/douleur_1.mp3");
+soundeffectArray["douleur_2"] = new buzz.sound("src/medias/sounds/douleur_2.mp3");
+soundeffectArray["douleur_3"] = new buzz.sound("src/medias/sounds/douleur_3.mp3");
+
+
+var musicArray = [];
+var musicactivated = true;
+musicArray["music_intro"] = new buzz.sound("src/medias/sounds/music_intro.mp3");
+musicArray["music_intro"].setVolume(15);
+musicArray["music_ambiance"] = new buzz.sound("src/medias/sounds/music_ambiance.mp3");
+musicArray["music_ambiance"].setVolume(15);
+musicArray["music_ambiance"].loop();
+
+console.log(musicArray.length);
+
 var lvl1 = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
@@ -47,7 +67,6 @@ levelactuelle = lvl2;
 for (let i = 0; i < nbligne; i++) {
   tab[i] = [];
 }
-console.log(levelactuelle);
 
 var boxGeometry = new THREE.BoxGeometry(0.3, 0.3, 1);
 var boxMaterial = new THREE.MeshNormalMaterial();
@@ -61,21 +80,11 @@ var center = new THREE.Vector3(0, 0, 0);
 var quelcamera = 0;
 let cameraTransitionInProgress = false;
 var scene, camera, renderer;
-
-var probability = 0.01; // probabilité de tirer un projectile (entre 0 et 1)
-function getRandomNumber() {
-  return Math.random();
-}
 // function to generate a random number between 0 and i
 function getRandomInt(i) {
   return Math.floor(Math.random() * i);
 }
 
-
-function playsound(pathing) {
-  let audio = new Audio(pathing);
-  audio.play();
-}
 
 // Fonction pour créer un nouveau projectile
 function createProjectile() {
@@ -91,29 +100,28 @@ function createProjectile() {
 // Fonction pour crée un nouveau projectile ennemie
 function createProjectileEnnemie() {
   if (!started) return;
-  if (projectilesEnnemy.length >= 5) return;
   if (tab[0].length == 0) return;
   var newProjectileEnnemy = new THREE.Mesh(boxGeometry, boxMaterial);
-  var numalien = getRandomInt(tab[0].length)
-  newProjectileEnnemy.position.set(tab[0][numalien].position.x, tab[0][0].position.y, tab[0][numalien].position.z);
+  let numalieni = getRandomInt(tab[0].length)
+  let numalienj = getRandomInt(tab.length)
+  newProjectileEnnemy.position.set(tab[numalienj][numalieni].position.x, tab[0][0].position.y, tab[numalienj][numalieni].position.z);
   newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, projectilespeedEnnemy);
   scene.add(newProjectileEnnemy);
   projectilesEnnemy.push(newProjectileEnnemy);
 }
 
-
 document.addEventListener('keydown', function(event) {
   if (event.code === 'Space' && tab[0].length > 0 && projectiles.length == 0 && started && !paused && animationPlayed) {
     animationPlayed = false;    
-    playAnimation(2);
+    playAnimation(2, 2);
     setTimeout(function() {
       createProjectile();
       
-    }, 300);
+    }, 150);
     setTimeout(function() {
       playAnimation(9);
       animationPlayed = true
-    }, 600);
+    }, 300);
     
     
   }
@@ -157,39 +165,29 @@ document.addEventListener('keydown', function(event) {
     quelcamera = 2;
   }
   if (event.code === "ArrowLeft" && started == true && !paused && tab[0].length > 0) { // flèche gauche
-    gsap.to(cube.position, {
-      duration: 0.1,
-      x: cube.position.x - cubespeed,
-      ease: "linear",
-    });
     gsap.to(playerModel.position, {
       duration: 0.1,
-      x: playerModel.position.x - cubespeed,
+      x: playerModel.position.x - playerspeed,
       ease: "linear",
     });
     if (quelcamera == 1) {
         gsap.to(camera.position, {
             duration: 0.1,
-            x: camera.position.x - cubespeed,
+            x: camera.position.x - playerspeed,
             ease: "linear",
         });
     }
   }
   if (event.code == "ArrowRight" && started == true && !paused && tab[0].length > 0) { // flèche droite
-    gsap.to(cube.position, {
-      duration: 0.1,
-      x: cube.position.x + cubespeed,
-      ease: "linear",
-    });
     gsap.to(playerModel.position, {
       duration: 0.1,
-      x: cube.position.x + cubespeed,
+      x: playerModel.position.x + playerspeed,
       ease: "linear",
     });
     if (quelcamera == 1) {
         gsap.to(camera.position, {
             duration: 0.1,
-            x: camera.position.x + cubespeed,
+            x: camera.position.x + playerspeed,
             ease: "linear",
         });
     }
@@ -199,14 +197,13 @@ document.addEventListener('keydown', function(event) {
     console.log(invincible);
   }
   if (event.code == "KeyK" &&  started == true && !paused && tab[0].length > 0) { // Kill all aliens
-    console.log(tab)
     for (var k = 0; k < tab.length; k++){
       for (var j = 0; j < tab[k].length; j++) {
         scene.remove(tab[k][j]); // Retirer la sphère de la scène
       }
       tab[k].splice(0, tab[k].length); // Retirer les sphère du tableau
+      levelactuelle[k].splice(0, levelactuelle[k].length);
     }
-    console.log(tab)
   }
 });
 
@@ -232,9 +229,6 @@ function init() {
   controls.update();
   controls.addEventListener('change', render);
 
-
-  cube.position.set(0, 0, 10); // initialise la position du cube
-  //scene.add(cube);
   // add a plate
   var geometryplate = new THREE.PlaneGeometry( 20, 20, 32 );
   var materialplate = new THREE.MeshBasicMaterial( {color: 0xeeeeee, side: THREE.DoubleSide} );
@@ -243,49 +237,12 @@ function init() {
   plane.rotation.x = Math.PI / 2;
   scene.add( plane );
   
-  for (let j = 0; j < nbligne; j++) {
-    let ecart = 0;
-    for (let i = 0; i < nbcolonne; i++) {
-      if (levelactuelle[j][i] != 0) {
-        console.log("ok");
-        let sphere = new THREE.Mesh( geometry, normalMesh );
-        if (i == 0) { 
-          sphere.position.set(-7.8 + ecart, 0, -j);
-        }
-        else { 
-          sphere.position.set(-7.8 + ecart, 0, -j);
-        }
-        scene.add(sphere);
-        tab[j][i] = sphere;
-        //console.log(tab);
-        //console.log(tab[i].position.x)
-        ecart += 3.5 * radius;
-     }
-     else {
-        tab[j][i] = 0;
-        console.log(tab[j].length);
-        ecart += 3.5 * radius;
-        console.log(tab);
-     }
-    }
-  }
-  for (let j = 0; j <= nbligne-1; j++) {
-    for (let i = 0; i <= 9; i++) {
-      if (tab[j][i] == 0) {
-        tab[j].splice(i, 1);
-        levelactuelle[j].splice(i, 1);
-      }
-    }
-  }
-  console.log(tab);
-  console.log(tab[0].length);
-  
-  camera.position.z = 5;
+
   
   render();
   createMenu();
-  scene.add(new THREE.AxesHelper(10))
-  scene.add(new THREE.GridHelper(20, 20))
+  //scene.add(new THREE.AxesHelper(10))
+  //scene.add(new THREE.GridHelper(20, 20))
 }
 
 function animate() {
@@ -296,11 +253,11 @@ function animate() {
   else {
     camera.lookAt(center);
   }
-  if (playerModel.position.x < -10) {
-    playerModel.position.x = -10;
+  if (playerModel.position.x < -limgauche) {
+    playerModel.position.x = -limgauche;
   }
-  if (playerModel.position.x > 10) {
-    playerModel.position.x = 10;
+  if (playerModel.position.x > limdroite) {
+    playerModel.position.x = limdroite;
   }
   if(started && !paused && tab[0].length > 0) {
     if (!invincible) {
@@ -308,7 +265,7 @@ function animate() {
         for (let i = 0; i < tab[j].length; i++) {
           if (tab[j][i] != undefined) {
             tab[j][i].position.x += xSpeed;
-            if(tab[j][i].position.x > 10 - radius  || tab[j][i].position.x < -10 + radius ) { 
+            if(tab[j][i].position.x > limdroite - radius  || tab[j][i].position.x < - limgauche + radius ) { 
               xSpeed = -xSpeed;
               for (let m = 0; m < tab.length; m++) {
                 for (let n = 0; n < tab[m].length; n++) {
@@ -318,7 +275,6 @@ function animate() {
                 }
               }
             }
-            //console.log(tab[2][9])
           }
         }
       }
@@ -341,26 +297,32 @@ function animate() {
                 else if (levelactuelle[k][j] == 3) score += 30;
                 console.log(score);
                 scene.remove(tab[k][j]); // Retirer la sphère de la scène
+                
                 if (tab[k].length == 1) {
                   if (tab.length == 1) {
                     tab[k].splice(j, 1);
                     alert("Gagner");
                   }
                   else {
-                    tab[k].splice(j, 1);
-                    tab.splice(k, 1);
+                    tab[k].splice(j, 1); // retire la sphère du tableau
+                    tab.splice(k, 1); // retire la ligne du tableau
+                    levelactuelle[k].splice(j, 1);
+                    levelactuelle.splice(k, 1);
                     k--;
                     j--;
-                    console.log(tab);
+                    //console.log(tab);
                   }
                 }
                 else {
                   tab[k].splice(j, 1); // Retirer la sphère du tableau
+                  levelactuelle[k].splice(j, 1);
                 }
                 scene.remove(projectiles[i]); // Retirer le projectile de la scène
                 projectiles.splice(i, 1); // Retirer le projectile du tableau
                 i--;
                 //break;
+                console.log(levelactuelle);
+                console.log(tab);
             }
           }
         }
@@ -377,9 +339,9 @@ function animate() {
           }
         else if (projectilesEnnemy[i].position.distanceTo(playerModel.position) <= 1.5) {
             console.log("playerModel toucher");
-            if(vie >= 3) playsound('src/medias/sounds/douleur_1.mp3');
-            else if(vie == 2) playsound('src/medias/sounds/douleur_2.mp3');
-            else if(vie == 1) playsound('src/medias/sounds/douleur_3.mp3');
+            if(vie >= 3) soundeffectArray["douleur_1"].play;
+            else if(vie == 2) soundeffectArray["douleur_2"].play;
+            else if(vie == 1) soundeffectArray["douleur_3"].play;
             vie -= 1;
             scene.remove(projectilesEnnemy[i]);
             projectilesEnnemy.splice(i, 1);
@@ -387,16 +349,20 @@ function animate() {
           }
       }
       if (tab[0].length > 0) {
-        if (getRandomNumber() < probability) {
+          if (projectilesEnnemy.length == 0) {
           createProjectileEnnemie();
           console.log("ça tire !");
         }
       }
     }
     if (tab[0][0].position.z > 10 || vie == 0) {
-      alert("Perdu !");
+      //alert("Perdu !");
+      playAnimation(7);
       started = false;
-      paused = true;
+      // wait 5 second
+      setTimeout(function() {
+        action.paused = true;
+      }, 1250);
       for (let i = 0; i < projectiles.length; i++) {
         scene.remove(projectiles[i]);
         projectiles.splice(i, 1);
@@ -415,6 +381,7 @@ function animate() {
         }
       }
     }
+    boxHelper.update();
   }
   render();
   const delta = clock.getDelta();
@@ -447,16 +414,58 @@ async function initAsync() {
   scene.add(playerModel);
   playAnimation(9);
 
+    for (let j = 0; j < nbligne; j++) {
+    let ecart = 0;
+    for (let i = 0; i < nbcolonne; i++) {
+      if (levelactuelle[j][i] != 0) {
+        let sphere = new THREE.Mesh( geometry, normalMesh );
+        if (i == 0) { 
+          sphere.position.set(-7.8 + ecart, 0, -j);
+        }
+        else { 
+          sphere.position.set(-7.8 + ecart, 0, -j);
+        }
+        scene.add(sphere);
+        tab[j][i] = sphere;
+        //console.log(tab);
+        //console.log(tab[i].position.x)
+        ecart += 3.5 * radius;
+     }
+     else {
+        tab[j][i] = 0;
+        //console.log(tab[j].length);
+        ecart += 3.5 * radius;
+        //console.log(tab);
+     }
+    }
+  }
+  for (let j = 0; j <= nbligne-1; j++) {
+    for (let i = 0; i <= 9; i++) {
+      if (tab[j][i] == 0) {
+        tab[j].splice(i, 1);
+        levelactuelle[j].splice(i, 1);
+      }
+    }
+  }
+  console.log(tab);
+  console.log(tab[0].length);
+  
+  camera.position.z = 5;
+  //  const box = new THREE.Box3().setFromObject(playerModel);
+  boxHelper = new THREE.BoxHelper(playerModel, 0xff0000);
+  scene.add(boxHelper);
+
   render();
 }
 
-function playAnimation(numAnim) {
+function playAnimation(numAnim, speed = 1) {
   //anim 9 tout le temps, 3 quand on tire, 7 pour esquiver, 24 tir du cheater qui OS tout le monde, 8 quand on meurt
-  clip = bodyData.animations[numAnim];
-  mixer = new THREE.AnimationMixer(playerModel);
-  action = mixer.clipAction(clip);
-  action.play();
-  action.paused = !loopOn;
+    clip = bodyData.animations[numAnim];
+    mixer = new THREE.AnimationMixer(playerModel);
+    mixer.timeScale = speed;
+    action = mixer.clipAction(clip);
+    action.play();
+    action.paused = !loopOn;
 }
 
 function createMenu() {
@@ -477,7 +486,13 @@ function createMenu() {
     startBtn.style.left = "4%";
     startBtn.onclick = function() {
       started = true;
-      playsound('src/medias/sounds/C_EST_PARTI.mp3');
+      musicArray["music_intro"].play();
+      setTimeout(function() {
+        soundeffectArray["C_EST_PARTI"].play();
+      }, 5000);
+      setTimeout(function() {
+        musicArray["music_ambiance"].play();
+      }, 16000);
     };
     document.body.appendChild(startBtn);
 
@@ -487,7 +502,9 @@ function createMenu() {
     optionBtn.style.top = "20px";
     optionBtn.style.left = "8%";
     optionBtn.onclick = function() {
-      alert("Options");
+      for(var sound in musicArray){
+        musicArray[sound].toggleMute();
+      }
     };
     document.body.appendChild(optionBtn);
 
