@@ -3,8 +3,12 @@ import { gsap } from "gsap";
 import buzz from 'buzz';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Key, Keyboard } from 'keyboard-ts';
 
-var xSpeed = 0.01;
+const container = document.querySelector('#canvas');
+console.log(container);
+
+var xSpeed = 0.05;
 var radius = 0.5;
 var segments = 32;
 var geometry = new THREE.SphereGeometry( radius, segments, segments );
@@ -12,7 +16,7 @@ var normalMesh = new THREE.MeshNormalMaterial();
 var boxHelper;
 
 var playerspeed = 1.5;
-var vie = 100;
+var vie = 1;
 var animationPlayed = true;
 
 
@@ -38,7 +42,6 @@ var limgauche = 15;
 var limdroite = 15;
 
 var soundeffectArray = [];
-var soundeffectactivated = true;
 soundeffectArray["C_EST_PARTI"] = new buzz.sound("src/medias/sounds/C_EST_PARTI.mp3");
 soundeffectArray["C_EST_PARTI"].setVolume(60);
 soundeffectArray["douleur_1"] = new buzz.sound("src/medias/sounds/douleur_1.mp3");
@@ -47,7 +50,6 @@ soundeffectArray["douleur_3"] = new buzz.sound("src/medias/sounds/douleur_3.mp3"
 
 
 var musicArray = [];
-var musicactivated = true;
 musicArray["music_intro"] = new buzz.sound("src/medias/sounds/music_intro.mp3");
 musicArray["music_intro"].setVolume(15);
 musicArray["music_ambiance"] = new buzz.sound("src/medias/sounds/music_ambiance.mp3");
@@ -72,10 +74,12 @@ levelactuelle = lvl1;
 var boxGeometry = new THREE.BoxGeometry(0.3, 0.3, 1);
 var boxMaterial = new THREE.MeshNormalMaterial();
 var projectiles = [];
-var projectilespeed = 0.2;
+var projectilespeed = 0.4;
+var projectilesmaxPlayer = 1;
 
 var projectilesEnnemy = [];
 var projectilespeedEnnemy = 0.1;
+var projectilesmaxEnnemy = 1;
 
 var center = new THREE.Vector3(0, 0, 0);
 var quelcamera = 0;
@@ -98,7 +102,7 @@ function spawnEnnemy() {
     console.log(levelactuelle);
   }
   else if (wave == 3) {
-    alert("Gagner");
+    alert("Gagné");
     return;
   }
   for (let i = 0; i < nbligne; i++) {
@@ -140,7 +144,7 @@ function spawnEnnemy() {
 // Fonction pour créer un nouveau projectile
 function createProjectile() {
   if (!started) return;
-  if (projectiles.length >= 1) return;
+  if (projectiles.length >= projectilesmaxPlayer) return;
   var newProjectile = new THREE.Mesh(boxGeometry, boxMaterial);
   newProjectile.position.set(playerModel.position.x, playerModel.position.y + 1, playerModel.position.z - 1.2);
   newProjectile.velocity = new THREE.Vector3(0, 0, - projectilespeed);
@@ -161,8 +165,12 @@ function createProjectileEnnemie() {
   projectilesEnnemy.push(newProjectileEnnemy);
 }
 
-document.addEventListener('keydown', function(event) {
-  if (event.code === 'Space' && tab[0].length > 0 && projectiles.length == 0 && started && !paused && animationPlayed) {
+const keyboardid = document.getElementById('keyboard')
+const keyboard = new Keyboard(keyboardid)
+// listen to Del + Esc
+keyboard.on([ Key.Space ], () => {
+  if (tab[0].length > 0 && projectiles.length < projectilesmaxPlayer && started && !paused && animationPlayed) {
+    event.preventDefault();
     animationPlayed = false;    
     playAnimation(2, 2);
     setTimeout(function() {
@@ -173,10 +181,11 @@ document.addEventListener('keydown', function(event) {
       playAnimation(9);
       animationPlayed = true
     }, 300);
-    
-    
   }
-  if (event.code === "Numpad0" && !cameraTransitionInProgress) {
+})
+
+keyboard.on([ Key.Numpad0 ], () => {
+  if ( !cameraTransitionInProgress) {
     cameraTransitionInProgress = true;
     gsap.to(camera.position, {
         duration: 3,
@@ -189,7 +198,10 @@ document.addEventListener('keydown', function(event) {
     });
     quelcamera = 0;
   }
-  if (event.code === "Numpad1" && !cameraTransitionInProgress) {
+})
+
+keyboard.on([ Key.Numpad1 ], () => {
+  if ( !cameraTransitionInProgress) {
     cameraTransitionInProgress = true;
     gsap.to(camera.position, {
         duration: 0.5,
@@ -202,7 +214,11 @@ document.addEventListener('keydown', function(event) {
     });
     quelcamera = 1;
   }
-  if (event.code === "Numpad2" && !cameraTransitionInProgress) {
+
+})
+
+keyboard.on([ Key.Numpad2 ], () => {
+  if (!cameraTransitionInProgress) {
     cameraTransitionInProgress = true;
     gsap.to(camera.position, {
         duration: 4,
@@ -214,8 +230,11 @@ document.addEventListener('keydown', function(event) {
         }
     });
     quelcamera = 2;
-  }
-  if (event.code === "ArrowLeft" && started == true && !paused && tab[0].length > 0) { // flèche gauche
+  }  
+})
+
+keyboard.on([ Key.LeftArrow ], () => {
+  if (started == true && !paused && tab[0].length > 0) { // flèche gauche
     gsap.to(playerModel.position, {
       duration: 0.1,
       x: playerModel.position.x - playerspeed,
@@ -229,7 +248,10 @@ document.addEventListener('keydown', function(event) {
         });
     }
   }
-  if (event.code == "ArrowRight" && started == true && !paused && tab[0].length > 0) { // flèche droite
+})
+
+keyboard.on([ Key.RightArrow ], () => {
+  if (started == true && !paused && tab[0].length > 0) { // flèche droite
     gsap.to(playerModel.position, {
       duration: 0.1,
       x: playerModel.position.x + playerspeed,
@@ -243,17 +265,25 @@ document.addEventListener('keydown', function(event) {
         });
     }
   }
-  if (event.code == "KeyI" && started == true && !paused && tab[0].length > 0) { // Invincible
+})
+
+keyboard.on([ Key.I ], () => {
+  if (started == true && !paused && tab[0].length > 0) { // Invincible
     invincible = !invincible;
     console.log(invincible);
     if (invincible) {
-      projectilespeed = 0.6;
+      projectilespeed = projectilespeed * 2;
+      projectilesmaxPlayer = 10;
     }
     else {
-      projectilespeed = 0.2;
+      projectilespeed = projectilespeed / 2;
+      projectilesmaxPlayer = 1;
     }
   }
-  if (event.code == "KeyK" &&  started == true && !paused && tab[0].length > 0) { // Kill all aliens
+})
+
+keyboard.on([ Key.K ], () => {
+  if (started == true && !paused && tab[0].length > 0) { // Kill all aliens
     for (var k = 0; k < tab.length; k++){
       for (var j = 0; j < tab[k].length; j++) {
         scene.remove(tab[k][j]); // Retirer la sphère de la scène
@@ -263,7 +293,11 @@ document.addEventListener('keydown', function(event) {
     }
     spawnEnnemy();
   }
-});
+})
+
+
+
+
 
 function init() {
   scene = new THREE.Scene();
@@ -293,7 +327,7 @@ function init() {
   var plane = new THREE.Mesh( geometryplate, materialplate );
   plane.position.set(0, -1, 0);
   plane.rotation.x = Math.PI / 2;
-  //scene.add( plane );
+  scene.add( plane );
   
 
   
@@ -392,38 +426,40 @@ function animate() {
       for (let k = 0; k < tab.length; k++) {
         for (let j = 0; j < tab[k].length; j++) {
           if (tab[k][j] != undefined) {
-            if (projectiles[i].position.distanceTo(tab[k][j].position) <= radius * 1.5) {
-                if (levelactuelle[k][j] == 1) addScore(smallennemyscore, k, j);
-                else if (levelactuelle[k][j] == 2) addScore(mediumennemyscore, k, j);
-                else if (levelactuelle[k][j] == 3) addScore(bigennemyscore, k, j);
-                console.log(score);
-                scene.remove(tab[k][j]); // Retirer la sphère de la scène
-                
-                if (tab[k].length == 1) {
-                  if (tab.length == 1) {
-                    tab[k].splice(j, 1);
-                    spawnEnnemy();
+            if (projectiles[i] != undefined) {
+              if (projectiles[i].position.distanceTo(tab[k][j].position) <= radius * 1.5) {
+                  if (levelactuelle[k][j] == 1) addScore(smallennemyscore, k, j);
+                  else if (levelactuelle[k][j] == 2) addScore(mediumennemyscore, k, j);
+                  else if (levelactuelle[k][j] == 3) addScore(bigennemyscore, k, j);
+                  console.log(score);
+                  scene.remove(tab[k][j]); // Retirer la sphère de la scène
+                  
+                  if (tab[k].length == 1) {
+                    if (tab.length == 1) {
+                      tab[k].splice(j, 1);
+                      spawnEnnemy();
+                    }
+                    else {
+                      tab[k].splice(j, 1); // retire la sphère du tableau
+                      tab.splice(k, 1); // retire la ligne du tableau
+                      levelactuelle[k].splice(j, 1);
+                      levelactuelle.splice(k, 1);
+                      k--;
+                      j--;
+                      //console.log(tab);
+                    }
                   }
                   else {
-                    tab[k].splice(j, 1); // retire la sphère du tableau
-                    tab.splice(k, 1); // retire la ligne du tableau
+                    tab[k].splice(j, 1); // Retirer la sphère du tableau
                     levelactuelle[k].splice(j, 1);
-                    levelactuelle.splice(k, 1);
-                    k--;
-                    j--;
-                    //console.log(tab);
                   }
-                }
-                else {
-                  tab[k].splice(j, 1); // Retirer la sphère du tableau
-                  levelactuelle[k].splice(j, 1);
-                }
-                scene.remove(projectiles[i]); // Retirer le projectile de la scène
-                projectiles.splice(i, 1); // Retirer le projectile du tableau
-                i--;
-                //break;
-                //console.log(levelactuelle);
-                //console.log(tab);
+                  scene.remove(projectiles[i]); // Retirer le projectile de la scène
+                  projectiles.splice(i, 1); // Retirer le projectile du tableau
+                  i--;
+                  //break;
+                  //console.log(levelactuelle);
+                  //console.log(tab);
+              }
             }
           }
         }
@@ -447,10 +483,11 @@ function animate() {
             scene.remove(projectilesEnnemy[i]);
             projectilesEnnemy.splice(i, 1);
             i--;
+            started = false;
           }
       }
       if (tab[0].length > 0) {
-          if (projectilesEnnemy.length == 0) {
+          if (projectilesEnnemy.length <= projectilesmaxEnnemy) {
           createProjectileEnnemie();
           console.log("ça tire !");
         }
