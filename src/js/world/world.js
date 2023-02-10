@@ -190,7 +190,6 @@ class World {
     }
   }
   shoot() {
-    console.log("shoot");
     const self = this;
     if (Level.tab[0].length > 0 && Player.projectiles.length < Player.projectilesmaxPlayer && Level.started && !Level.paused && Player.animationPlayed) {
       Player.animationPlayed = false;    

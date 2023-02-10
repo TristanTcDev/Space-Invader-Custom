@@ -21,7 +21,7 @@ const Ennemy = {
   
   //-------------------- Rangée de maisons ---
   const Player = {
-    playerSpeed: 1.5,       // tableau de configurations de maisons
+    playerSpeed: 1,       // tableau de configurations de maisons
     projectiles: [],
     projectilespeed: 0.4,
     projectilesmaxPlayer: 1,
@@ -31,7 +31,7 @@ const Ennemy = {
     animationPlayed: true,
     score: 0,
     quelCamera: 0,
-    vie : 2,
+    vie : 2000,
 
   };
 

@@ -35,6 +35,32 @@ function createKeyboard(container, world) {
     event.preventDefault()
     world.mooveRight();
   })
+/*
+document.addEventListener("keydown", onDocumentKeyDown, false);
+
+function onDocumentKeyDown(event) {
+  switch (event.keyCode) {
+    case 37:
+      if (event.type == "keydown") {
+
+      }
+      break;
+    case 38:
+      console.log("Up arrow key was pressed");
+      break;
+    case 39:
+      console.log("Right arrow key was pressed");
+      break;
+    case 40:
+      console.log("Down arrow key was pressed");
+      break;
+    default:
+      console.log("Other key was pressed");
+      break;
+  }
+}*/
+
+
   keyboard.on([Key.Space], event => {
     // event is classic HTML event
     event.preventDefault()
