@@ -4,11 +4,15 @@ import buzz from 'buzz';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Key, Keyboard } from 'keyboard-ts';
+//import { World } from './world/world.js';
+
 
 const container = document.querySelector('#canvas');
 console.log(container);
 
-var xSpeed = 0.05;
+//const world = new World(container);
+
+var ennemySpeed = 0.02;
 var radius = 0.5;
 var segments = 32;
 var geometry = new THREE.SphereGeometry( radius, segments, segments );
@@ -16,7 +20,7 @@ var normalMesh = new THREE.MeshNormalMaterial();
 var boxHelper;
 
 var playerspeed = 1.5;
-var vie = 1;
+var vie = 3;
 var animationPlayed = true;
 
 
@@ -25,7 +29,7 @@ var mediumennemyscore = 20;
 var bigennemyscore = 30;
 
 
-var mixer, action, clip, bodyData, playerModel;
+var mixer, action, bodyData, playerModel;
 const clock = new THREE.Clock();
 const loopOn = true;
 
@@ -91,7 +95,7 @@ function getRandomInt(i) {
 }
 
 
-function spawnEnnemy() {
+export function spawnEnnemy() {
   wave++;
   if (wave == 1) {
     levelactuelle = lvl1;
@@ -142,7 +146,7 @@ function spawnEnnemy() {
 }
 
 // Fonction pour créer un nouveau projectile
-function createProjectile() {
+export function createProjectile() {
   if (!started) return;
   if (projectiles.length >= projectilesmaxPlayer) return;
   var newProjectile = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -178,8 +182,10 @@ keyboard.on([ Key.Space ], () => {
       
     }, 150);
     setTimeout(function() {
-      playAnimation(9);
-      animationPlayed = true
+      if (vie > 0) {
+        playAnimation(9);
+        animationPlayed = true
+      }
     }, 300);
   }
 })
@@ -232,7 +238,7 @@ keyboard.on([ Key.Numpad2 ], () => {
     quelcamera = 2;
   }  
 })
-
+/*
 keyboard.on([ Key.LeftArrow ], () => {
   if (started == true && !paused && tab[0].length > 0) { // flèche gauche
     gsap.to(playerModel.position, {
@@ -265,7 +271,38 @@ keyboard.on([ Key.RightArrow ], () => {
         });
     }
   }
-})
+})*/
+
+document.addEventListener('keydown', function(event) {
+  if (event.code === "ArrowLeft" && started == true && !paused && tab[0].length > 0) { // flèche gauche
+    gsap.to(playerModel.position, {
+      duration: 0.1,
+      x: playerModel.position.x - playerspeed,
+      ease: "linear",
+    });
+    if (quelcamera == 1) {
+        gsap.to(camera.position, {
+            duration: 0.1,
+            x: camera.position.x - playerspeed,
+            ease: "linear",
+        });
+    }
+  }
+  if (event.code == "ArrowRight" && started == true && !paused && tab[0].length > 0) { // flèche droite
+    gsap.to(playerModel.position, {
+      duration: 0.1,
+      x: playerModel.position.x + playerspeed,
+      ease: "linear",
+    });
+    if (quelcamera == 1) {
+        gsap.to(camera.position, {
+            duration: 0.1,
+            x: camera.position.x + playerspeed,
+            ease: "linear",
+        });
+    }
+  }
+ });
 
 keyboard.on([ Key.I ], () => {
   if (started == true && !paused && tab[0].length > 0) { // Invincible
@@ -381,6 +418,7 @@ function addScore(scoreennemi, i, j) {
 }
 
 function animate() {
+  console.log("animate");
   requestAnimationFrame( animate );
   if (quelcamera == 1) {
     camera.lookAt(playerModel.position.x, 0, 0);
@@ -399,9 +437,9 @@ function animate() {
       for (let j = 0; j < tab.length; j++) {
         for (let i = 0; i < tab[j].length; i++) {
           if (tab[j][i] != undefined) {
-            tab[j][i].position.x += xSpeed;
+            tab[j][i].position.x += ennemySpeed;
             if(tab[j][i].position.x > limdroite - radius  || tab[j][i].position.x < - limgauche + radius ) { 
-              xSpeed = -xSpeed;
+              ennemySpeed = -ennemySpeed;
               for (let m = 0; m < tab.length; m++) {
                 for (let n = 0; n < tab[m].length; n++) {
                   if (tab[m][n] != undefined) {
@@ -483,7 +521,6 @@ function animate() {
             scene.remove(projectilesEnnemy[i]);
             projectilesEnnemy.splice(i, 1);
             i--;
-            started = false;
           }
       }
       if (tab[0].length > 0) {
@@ -564,7 +601,7 @@ async function initAsync() {
 
 function playAnimation(numAnim, speed = 1) {
   //anim 9 tout le temps, 3 quand on tire, 7 pour esquiver, 24 tir du cheater qui OS tout le monde, 8 quand on meurt
-    clip = bodyData.animations[numAnim];
+    let clip = bodyData.animations[numAnim];
     mixer = new THREE.AnimationMixer(playerModel);
     mixer.timeScale = speed;
     action = mixer.clipAction(clip);
