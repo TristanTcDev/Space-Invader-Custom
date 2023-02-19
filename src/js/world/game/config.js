@@ -6,7 +6,7 @@
 
 //----------------------------- Quartier ---
 const Ennemy = {
-    ennemySpeed: 0.02,
+    ennemySpeed: 2,
     radius: 0.5,
     segments: 32,
 

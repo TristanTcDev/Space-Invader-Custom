@@ -1,5 +1,4 @@
 import { World } from './world/world.js';
-import buzz from 'buzz';
 
 
 async function main() {

@@ -3,19 +3,21 @@ import { spawnEnnemy } from "./ennemy";
 import { musicANDsound, Level } from "./config";
 
 
-function initGame(scene) {
-  
+function initGame(scene, camera) {
     // add a plate
     var geometryplate = new THREE.PlaneGeometry( 20, 20, 32 );
-    var materialplate = new THREE.MeshBasicMaterial( {color: 0xeeeeee, side: THREE.DoubleSide} );
+    var materialplate = new THREE.MeshPhongMaterial( {color: 0xeeeeee, side: THREE.DoubleSide } );
     var plane = new THREE.Mesh( geometryplate, materialplate );
+    plane.receiveShadow = true;
+
     plane.position.set(0, -1, 0);
     plane.rotation.x = Math.PI / 2;
     scene.add( plane );
     createMenu();
     scene.add(new THREE.AxesHelper(10))
     scene.add(new THREE.GridHelper(20, 20))
-    spawnEnnemy(scene);
+    const areturn = spawnEnnemy(scene, camera);
+    return areturn;
   }
 
   function createMenu() {
@@ -77,7 +79,7 @@ function initGame(scene) {
     pauseBtn.style.top = "20px";
     pauseBtn.style.left = "12%";
     pauseBtn.onclick = function() {
-      paused = !paused;
+      Level.paused = !Level.paused;
     };
     document.body.appendChild(pauseBtn);
 }

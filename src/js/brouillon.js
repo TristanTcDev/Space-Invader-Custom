@@ -7,11 +7,6 @@ import { Key, Keyboard } from 'keyboard-ts';
 import { World } from './world/world.js';
 
 
-const container = document.querySelector('#canvas');
-console.log(container);
-
-const world = new World(container);
-
 var radius = 0.5;
 var segments = 32;
 var geometry = new THREE.SphereGeometry( radius, segments, segments );
@@ -111,10 +106,6 @@ document.addEventListener('keydown', function(event) {
     }
   }
  });
-
-function scaleModel(model, scale) {
-  model.scale.set(scale, scale, scale);
-}
 
 async function main() {
   init();

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Player } from './config';
-
 var mixer;
 var action;
 
@@ -10,10 +9,18 @@ function playAnimation(numAnim, speed = 1) {
       mixer = new THREE.AnimationMixer(Player.playerModel);
       mixer.timeScale = speed;
       action = mixer.clipAction(clip);
-      console.log();
       action.play();
 
-      Player.playerModel.tick = (delta) => mixer.update(delta);
+      Player.playerModel.tick = (delta) =>  {
+        mixer.update(delta);
+        if ( Player.mooveatright) {
+          Player.playerModel.position.x += Player.playerSpeed * delta;
+          Player.mooveatright = false;
+        }
+        //console.log(Player.playerModel.position.x);
+        //Player.playerModel.position.x += Player.playerSpeed * delta;
+
+      }
       action.paused = false;
   }
 

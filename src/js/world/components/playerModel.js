@@ -4,7 +4,26 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { playAnimation } from '../game/animation.js';
 
 async function loadPM(scene, camera) {
-    const loader = new GLTFLoader();
+
+    const loadingManager = new THREE.LoadingManager();
+    const progressBar = document.getElementById('progress-bar');
+
+
+    loadingManager.onProgress = function(url, loaded, total) { 
+        progressBar.value = (loaded / total) * 100;
+        console.log(`Started loading: ${url}`);
+    }
+
+    const progressBarManager = document.querySelector('.progress-bar-container');
+
+    loadingManager.onLoad = function() {
+        progressBarManager.style.display = 'none';
+        console.log('Loading complete!');
+    }
+
+
+
+    const loader = new GLTFLoader(loadingManager);
     Player.bodyData = await loader.loadAsync('./src/medias/models/scene.gltf');
     Player.playerModel = Player.bodyData.scene;
     playAnimation(8);

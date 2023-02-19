@@ -3,6 +3,7 @@ import { createRenderer }  from './systems/renderer.js';
 import { createControls }  from './systems/controls.js';
 import { createCamera }  from './components/camera.js';
 import { createScene }  from './components/scene.js';
+import { createLights } from './components/lights.js';
 import { createKeyboard }  from './systems/keyboard.js';
 
 import { Loop }            from './systems/loop.js';
@@ -14,6 +15,7 @@ import { loadPM } from './components/playerModel.js';
 import { playAnimation } from './game/animation.js';
 import { createProjectile } from './game/projectile.js';
 import { spawnEnnemy } from './game/ennemy.js';
+
 
 
 class World {
@@ -28,11 +30,14 @@ class World {
   #helpersLayer
   #counter
   #cameraTransitionInProgress
+  #light
+
 
   constructor(container) {
     this.#camera = createCamera();
     this.#renderer = createRenderer();
     this.#scene = createScene();
+    this.#light = createLights(this.#scene);
     this.#controls = createControls(this.#camera, this.#renderer.domElement);
     //this.#resizer = new Resizer(container, this.#scene, this.#camera, this.#renderer);
     this.#loop = new Loop(this.#camera, this.#scene, this.#renderer);
@@ -48,7 +53,9 @@ class World {
   
     // create entities in the scene
     //createEntities(this.#scene, this.#renderer.domElement);
-    initGame(this.#scene)
+    this.#loop.addUpdatable(initGame(this.#scene, this.#camera));
+
+
 
     container.append(this.#renderer.domElement);
   }
@@ -106,6 +113,7 @@ class World {
   }
 
   changeCamera0() {
+    console.log("changeCamera0");
     if ( !this.#cameraTransitionInProgress) {
       this.#cameraTransitionInProgress = true;
       const self = this;
@@ -122,6 +130,7 @@ class World {
     }
   }
   changeCamera1() {
+    console.log("changeCamera1");
     if ( !this.#cameraTransitionInProgress) {
       this.#cameraTransitionInProgress = true;
       const self = this;
@@ -231,7 +240,7 @@ class World {
         Level.tab[k].splice(0, Level.tab[k].length); // Retirer les sphère du tableau
         Level.levelactuelle[k].splice(0, Level.levelactuelle[k].length);
       }
-      spawnEnnemy(this.#scene);
+      spawnEnnemy(this.#scene, this.#camera);
     }
   }
 
