@@ -9,7 +9,7 @@ import { createKeyboard }  from './systems/keyboard.js';
 import { Loop }            from './systems/loop.js';
 import { gsap } from "gsap";
 import { initGame } from './game/init.js';
-import { Player, Level } from './game/config.js';
+import { Player, Level, Ennemy } from './game/config.js';
 import { SoundGestion } from './game/sound.js';
 import { loadPM } from './components/playerModel.js';
 import { playAnimation } from './game/animation.js';
@@ -53,7 +53,6 @@ class World {
   
     // create entities in the scene
     //createEntities(this.#scene, this.#renderer.domElement);
-    this.#loop.addUpdatable(initGame(this.#scene, this.#camera));
 
 
 
@@ -63,8 +62,10 @@ class World {
   async init() {
     // Add asynchronous tasks (loading models for example)
     const PM = await loadPM(this.#scene, this.#camera);
-    this.#scene.add(PM);
-    this.#loop.addUpdatable(PM);
+    this.#scene.add(PM[0]);
+    //this.#scene.add(PM[1]);
+    this.#loop.addUpdatable(PM[0]);
+    this.#loop.addUpdatable(PM[1]);
     SoundGestion();
     this.render();
 
@@ -80,6 +81,8 @@ class World {
   }
 
   start() {
+    
+    this.#loop.addUpdatable(initGame(this.#scene, this.#camera));
     this.#loop.start();
   }
 
@@ -202,14 +205,14 @@ class World {
     const self = this;
     if (Level.tab[0].length > 0 && Player.projectiles.length < Player.projectilesmaxPlayer && Level.started && !Level.paused && Player.animationPlayed) {
       Player.animationPlayed = false;    
-      playAnimation(2, 2);
+      playAnimation(2, 2, Player.bodyData, Player.playerModel);
       setTimeout(function() {
         createProjectile( self.#scene);
         
       }, 150);
       setTimeout(function() {
         if (Player.vie > 0) {
-          playAnimation(9);
+          playAnimation(9, 1, Player.bodyData, Player.playerModel);
           Player.animationPlayed = true
         }
       }, 300);

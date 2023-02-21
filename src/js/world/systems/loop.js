@@ -45,7 +45,7 @@ class Loop {
       0.4,
       0.85
     );
-    const pixelrend = new RenderPixelatedPass({width: window.innerWidth, height: window.innerHeight}, 5, this.#scene, this.#camera, {normalEdgeStrength: 0, depthEdgeStrength: 1})
+    const pixelrend = new RenderPixelatedPass({width: window.innerWidth, height: window.innerHeight}, 2, this.#scene, this.#camera)
     this.#composer.addPass(pixelrend);
     
     //this.#composer.addPass(bloomEffect);
@@ -100,7 +100,6 @@ class Loop {
   
   tick() {
     if (this.#paused) return;
-
 
     
     // only call the getDelta function once per frame!

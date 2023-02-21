@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { Player, Level, Ennemy, musicANDsound } from './config.js';
 import { createProjectileEnnemie } from './projectile.js';
-import { playAnimation, action } from './animation.js';
+import { playAnimation, action, playAnimationEnnemy } from './animation.js';
 import { addScore } from './score.js';
+import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
+import { Loop } from '../systems/loop.js';
 
 
 var center = new THREE.Vector3(0, 0, 0);
@@ -30,17 +32,13 @@ function spawnEnnemy(scene, camera) {
       let ecart = 0;
       for (let i = 0; i < Level.nbcolonne; i++) {
         if (Level.levelactuelle[j][i] != 0) {
-          let sphere = new THREE.Mesh( geometry, normalMesh );
-          sphere.castShadow = true;
-          sphere.receiveShadow = true;
-          if (i == 0) { 
-            sphere.position.set(-7.8 + ecart, 0, -j);
-          }
-          else { 
-            sphere.position.set(-7.8 + ecart, 0, -j);
-          }
-          scene.add(sphere);
-          Level.tab[j][i] = sphere;
+          //let sphere = new THREE.Mesh( geometry, normalMesh );
+          let ennemie = clone(Ennemy.ennemyModel);
+          //sphere.castShadow = true;
+          //sphere.receiveShadow = true;
+          ennemie.position.set(-7.8 + ecart, 0, -j);
+          scene.add(ennemie);
+          Level.tab[j][i] = ennemie;
   
           ecart += 3.5 * Ennemy.radius;
        }
@@ -58,6 +56,16 @@ function spawnEnnemy(scene, camera) {
         }
       }
     }
+    // Initialiser chaque élément de Ennemy.ennmyanim à un tableau vide
+    for (let j = 0; j < Level.tab.length; j++) {
+      Ennemy.ennemyanim[j] = [];
+      for (let i = 0; i < Level.tab[j].length; i++) {
+        Ennemy.ennemyanim[j][i] = [];
+        playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[j][i], j, i)
+      }
+    }
+    
+
     Level.tab.tick = (delta) => {
       if (Player.quelCamera == 1) {
         camera.lookAt(Player.playerModel.position.x, 0, 0);
@@ -80,13 +88,15 @@ function spawnEnnemy(scene, camera) {
                 Level.tab[j][i].position.x += Ennemy.ennemySpeed * delta;
                 if(Level.tab[j][i].position.x > Level.limdroite - Ennemy.radius  || Level.tab[j][i].position.x < - Level.limgauche + Ennemy.radius ) { 
                   Ennemy.ennemySpeed = -Ennemy.ennemySpeed;
-                  for (let m = 0; m < Level.tab.length; m++) {
-                    for (let n = 0; n < Level.tab[m].length; n++) {
-                      if (Level.tab[m][n] != undefined) {
-                        Level.tab[m][n].position.z += 0.5;
+                  setTimeout(function() {
+                    for (let m = 0; m < Level.tab.length; m++) {
+                      for (let n = 0; n < Level.tab[m].length; n++) {
+                        if (Level.tab[m][n] != undefined) {
+                          Level.tab[m][n].position.z += 0.5;
+                        }
                       }
                     }
-                  }
+                  }, 50)
                 }
               }
             }
@@ -174,12 +184,13 @@ function spawnEnnemy(scene, camera) {
             }
           }
         }
-        if (Level.tab[0][0].position.z > 10 || Player.vie == 0) {
+        if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 10) || Player.vie == 0) {
           //alert("Perdu !");
-          playAnimation(7);
-          Level.started = false;
+          playAnimation(7,1, Player.bodyData, Player.playerModel);
+          
           setTimeout(function() {
             action.paused = true;
+            Level.started = false;
           }, 1250);
           for (let i = 0; i < Player.projectiles.length; i++) {
             scene.remove(Player.projectiles[i]);

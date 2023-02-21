@@ -17,11 +17,8 @@ function createProjectileEnnemie(scene) {
     if (Level.tab[0].length == 0) return;
     var newProjectileEnnemy = new THREE.Mesh(boxGeometry, boxMaterial);
 
-
     let numalienj = getRandomInt(Level.tab.length);
     let numalieni = getRandomInt(Level.tab[numalienj].length);
-
-
 
     let bug = 0;
     while (Math.abs(Level.tab[numalienj][numalieni].position.x - Player.playerModel.position.x) > 10 / Level.wave && bug < 100 ) {
@@ -30,11 +27,6 @@ function createProjectileEnnemie(scene) {
       bug++;
     }
     console.log("nb iteration: " + bug);
-
-
-
-    // afficher la distance sur la console
-
 
 
     newProjectileEnnemy.position.set(Level.tab[numalienj][numalieni].position.x, Level.tab[0][0].position.y, Level.tab[numalienj][numalieni].position.z);

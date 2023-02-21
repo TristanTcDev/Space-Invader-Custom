@@ -17,6 +17,10 @@ const Ennemy = {
     projectilesEnnemy: [],
     projectilespeedEnnemy: 0.1,
     projectilesmaxEnnemy: 1,
+
+    ennemyModel: null,
+    ennemybodyData: null,
+    ennemyanim: [],
   };
   
   //-------------------- Rangée de maisons ---
@@ -31,7 +35,7 @@ const Ennemy = {
     animationPlayed: true,
     score: 0,
     quelCamera: 0,
-    vie : 2000,
+    vie : 3,
 
   };
 
