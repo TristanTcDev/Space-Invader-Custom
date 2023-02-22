@@ -21,6 +21,8 @@ const Ennemy = {
     ennemyModel: null,
     ennemybodyData: null,
     ennemyanim: [],
+    ennemyaction: [],
+    ennemymixer: [],
   };
   
   //-------------------- Rangée de maisons ---

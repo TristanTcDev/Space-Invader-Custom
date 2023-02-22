@@ -59,9 +59,12 @@ function spawnEnnemy(scene, camera) {
     // Initialiser chaque élément de Ennemy.ennmyanim à un tableau vide
     for (let j = 0; j < Level.tab.length; j++) {
       Ennemy.ennemyanim[j] = [];
+      Ennemy.ennemymixer[j] = [];
+      Ennemy.ennemyaction[j] = [];
       for (let i = 0; i < Level.tab[j].length; i++) {
-        Ennemy.ennemyanim[j][i] = [];
-        playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[j][i], j, i)
+        Ennemy.ennemymixer[j][i] = new THREE.AnimationMixer(Level.tab[j][i]);
+        Ennemy.ennemyanim[j][i] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[j][i], j, i, Ennemy.ennemymixer[j][i]);
+        //playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[2][2], j, i);
       }
     }
     
