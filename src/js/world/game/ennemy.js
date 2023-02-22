@@ -182,7 +182,10 @@ function spawnEnnemy(scene, camera) {
           }
           if (Level.tab[0].length > 0) {
               if (Ennemy.projectilesEnnemy.length <= Ennemy.projectilesmaxEnnemy) {
-              createProjectileEnnemie(scene);
+              let aliennum = createProjectileEnnemie(scene);
+              /*if (aliennum != undefined) {
+                Ennemy.ennemyanim[aliennum[0]][aliennum[1]] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[aliennum[0]][aliennum[1]], aliennum[0], aliennum[1], Ennemy.ennemymixer[aliennum[0]][aliennum[1]]);
+              }*/
               console.log("ça tire ! ???");
             }
           }

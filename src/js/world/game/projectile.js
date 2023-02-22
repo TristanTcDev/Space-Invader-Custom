@@ -2,6 +2,7 @@
 
 import * as THREE from 'three';
 import { Ennemy, Level, Player } from './config';
+import { playAnimationEnnemy } from './animation';
 
 
 var boxGeometry = new THREE.BoxGeometry(0.3, 0.3, 1);
@@ -28,11 +29,13 @@ function createProjectileEnnemie(scene) {
     }
     console.log("nb iteration: " + bug);
 
-
+    playAnimationEnnemy(3,1, Ennemy.ennemybodyData, Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+    
     newProjectileEnnemy.position.set(Level.tab[numalienj][numalieni].position.x, Level.tab[0][0].position.y, Level.tab[numalienj][numalieni].position.z);
     newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
     scene.add(newProjectileEnnemy);
     Ennemy.projectilesEnnemy.push(newProjectileEnnemy);
+    return [numalienj, numalieni];
   }
 
 function createProjectile(scene) {
