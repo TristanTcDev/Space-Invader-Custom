@@ -35,6 +35,13 @@ function createProjectileEnnemie(scene) {
     newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
     scene.add(newProjectileEnnemy);
     Ennemy.projectilesEnnemy.push(newProjectileEnnemy);
+
+    setTimeout(function() {
+      console.log("test");
+      playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+    }, 1900);
+
+
     return [numalienj, numalieni];
   }
 

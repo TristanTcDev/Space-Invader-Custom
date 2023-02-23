@@ -28,11 +28,13 @@ function playAnimationEnnemy(numAnim, speed = 1, data, model, j, i, mixer) {
   let clip = data.animations[numAnim];
   // let mixer = new THREE.AnimationMixer(model);
   //console.log(mixer[j][i]);
+  Ennemy.ennemymixer[j][i].stopAllAction();
   Ennemy.ennemymixer[j][i].timeScale = speed;
   let actionennemy = Ennemy.ennemymixer[j][i].clipAction(clip);
   //Ennemy.ennemyanim[j][i] = actionennemy;
   //Ennemy.ennemyanim[j][i].play();
   actionennemy.play();
+  //console.log(Ennemy.ennemymixer[j][i]);
 
   Ennemy.ennemyModel.tick = (delta) =>  {
     for (let j = 0; j < Ennemy.ennemymixer.length; j++) {

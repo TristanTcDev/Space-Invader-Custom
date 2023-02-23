@@ -45,13 +45,13 @@ class Loop {
       0.4,
       0.85
     );
-    const pixelrend = new RenderPixelatedPass({width: window.innerWidth, height: window.innerHeight}, 2, this.#scene, this.#camera)
+    const pixelrend = new RenderPixelatedPass({width: window.innerWidth, height: window.innerHeight}, 1, this.#scene, this.#camera)
     this.#composer.addPass(pixelrend);
     
-    //this.#composer.addPass(bloomEffect);
+    this.#composer.addPass(bloomEffect);
     
-    //this.#renderer.toneMapping = THREE.CineonToneMapping;
-    //this.#renderer.toneMappingExposure = 1;
+    this.#renderer.toneMapping = THREE.CineonToneMapping;
+    this.#renderer.toneMappingExposure = 1;
 
 
     //const glitcheffect = new GlitchEffect();
