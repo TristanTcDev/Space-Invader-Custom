@@ -4,17 +4,14 @@ import { createProjectileEnnemie } from './projectile.js';
 import { playAnimation, action, playAnimationEnnemy } from './animation.js';
 import { addScore } from './score.js';
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { Loop } from '../systems/loop.js';
-
 
 var center = new THREE.Vector3(0, 0, 0);
 
 function spawnEnnemy(scene, camera) {
-    var geometry = new THREE.SphereGeometry( Ennemy.radius, Ennemy.segments, Ennemy.segments );
-    var normalMesh = new THREE.MeshPhongMaterial();
     Level.wave++;
     if (Level.wave == 1) {
       Level.levelactuelle = Level.lvl1;
+      console.log("ojdfosdgfoifgjfddg");
       console.log(Level.levelactuelle);
     }
     else if (Level.wave == 2) {
@@ -32,6 +29,7 @@ function spawnEnnemy(scene, camera) {
       let ecart = 0;
       for (let i = 0; i < Level.nbcolonne; i++) {
         if (Level.levelactuelle[j][i] != 0) {
+          console.log(Level.levelactuelle[j][i]);
           //let sphere = new THREE.Mesh( geometry, normalMesh );
           let ennemie = clone(Ennemy.ennemyModel);
           //sphere.castShadow = true;
@@ -192,6 +190,7 @@ function spawnEnnemy(scene, camera) {
         }
         if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 10) || Player.vie == 0) {
           //alert("Perdu !");
+          Level.loose = true;
           playAnimation(7,1, Player.bodyData, Player.playerModel);
           
           setTimeout(function() {

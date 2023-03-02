@@ -35,6 +35,11 @@ function createKeyboard(container, world) {
     event.preventDefault()
     world.mooveRight();
   })
+  keyboard.on([Key.Enter], event => {
+    // event is classic HTML event
+    event.preventDefault()
+    world.restart();
+  })
 /*
 document.addEventListener("keydown", onDocumentKeyDown, false);
 

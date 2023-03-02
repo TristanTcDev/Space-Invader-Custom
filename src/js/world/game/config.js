@@ -50,6 +50,7 @@ const Ennemy = {
     started: false,
     finished: false,
     paused: false,
+    loose: false,
 
     nbligne: 5,
     nbcolonne: 10,

@@ -246,6 +246,17 @@ class World {
       spawnEnnemy(this.#scene, this.#camera);
     }
   }
+  restart() {
+    if (Level.loose) {
+      Level.started = true;
+      Level.loose = false;
+      Level.paused = false;
+      Level.wave = 0;
+      Player.vie = 3;
+      Player.score = 0;
+      spawnEnnemy(this.#scene, this.#camera);
+    }
+  }
 
   showHelp() {
     console.log("Affiche de l'aide");

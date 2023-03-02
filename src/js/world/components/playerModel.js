@@ -8,13 +8,13 @@ async function loadPM(scene, camera) {
     const loadingManager = new THREE.LoadingManager();
     const progressBar = document.getElementById('progress-bar');
 
+    const progressBarManager = document.querySelector('.progress-bar-container');
 
-    loadingManager.onProgress = function(url, loaded, total) { 
+    loadingManager.onProgress = function(url, loaded, total) {
+        progressBarManager.style.display = 'block';
         progressBar.value = (loaded / total) * 100;
         console.log(`Started loading: ${url}`);
     }
-
-    const progressBarManager = document.querySelector('.progress-bar-container');
 
     loadingManager.onLoad = function() {
         progressBarManager.style.display = 'none';
