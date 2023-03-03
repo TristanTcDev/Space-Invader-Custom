@@ -1,10 +1,5 @@
 
-// Conventions : 
-//  - les valeurs à 0 sont à initialiser ou calculer
-//  - les valeurs différentes de 0 sont fixées
-//  - Min et Max pour des entiers, min et max pour des flottants
 
-//----------------------------- Quartier ---
 const Ennemy = {
     ennemySpeed: 2,
     radius: 0.5,
@@ -25,9 +20,9 @@ const Ennemy = {
     ennemymixer: [],
   };
   
-  //-------------------- Rangée de maisons ---
+
   const Player = {
-    playerSpeed: 1,       // tableau de configurations de maisons
+    playerSpeed: 1,     
     projectiles: [],
     projectilespeed: 0.4,
     projectilesmaxPlayer: 1,

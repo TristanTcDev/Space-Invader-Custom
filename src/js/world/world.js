@@ -254,6 +254,8 @@ class World {
       Level.wave = 0;
       Player.vie = 3;
       Player.score = 0;
+      Level.tab.splice(0, Level.tab.length);
+      
       spawnEnnemy(this.#scene, this.#camera);
     }
   }

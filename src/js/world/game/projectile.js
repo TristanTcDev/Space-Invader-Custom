@@ -37,7 +37,7 @@ function createProjectileEnnemie(scene) {
     Ennemy.projectilesEnnemy.push(newProjectileEnnemy);
 
     setTimeout(function() {
-      console.log("test");
+      console.log("play animation projennemy");
       playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
     }, 1900);
 

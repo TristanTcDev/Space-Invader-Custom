@@ -10,12 +10,12 @@ var center = new THREE.Vector3(0, 0, 0);
 function spawnEnnemy(scene, camera) {
     Level.wave++;
     if (Level.wave == 1) {
-      Level.levelactuelle = Level.lvl1;
+      Level.levelactuelle = Level.lvl1.slice();
       console.log("ojdfosdgfoifgjfddg");
       console.log(Level.levelactuelle);
     }
     else if (Level.wave == 2) {
-      Level.levelactuelle = Level.lvl2;
+      Level.levelactuelle = Level.lvl2.slice();
       console.log(Level.levelactuelle);
     }
     else if (Level.wave == 3) {
@@ -181,9 +181,6 @@ function spawnEnnemy(scene, camera) {
           if (Level.tab[0].length > 0) {
               if (Ennemy.projectilesEnnemy.length <= Ennemy.projectilesmaxEnnemy) {
               let aliennum = createProjectileEnnemie(scene);
-              /*if (aliennum != undefined) {
-                Ennemy.ennemyanim[aliennum[0]][aliennum[1]] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[aliennum[0]][aliennum[1]], aliennum[0], aliennum[1], Ennemy.ennemymixer[aliennum[0]][aliennum[1]]);
-              }*/
               console.log("ça tire ! ???");
             }
           }
@@ -191,6 +188,7 @@ function spawnEnnemy(scene, camera) {
         if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 10) || Player.vie == 0) {
           //alert("Perdu !");
           Level.loose = true;
+          
           playAnimation(7,1, Player.bodyData, Player.playerModel);
           
           setTimeout(function() {
@@ -206,7 +204,17 @@ function spawnEnnemy(scene, camera) {
             scene.remove(Ennemy.projectilesEnnemy[i]);
             Ennemy.projectilesEnnemy.splice(i, 1);
             i--;
-          }
+          }/*
+          for (let k = 0; k < Level.tab.length; k++){
+            for (let j = 0; j < Level.tab[k].length; j++) {
+              scene.remove(Level.tab[k][j]); // Retirer la sphère de la scène
+            }
+            Level.tab[k].splice(0, Level.tab[k].length); // Retirer les sphère du tableau
+            
+            //console.log(Level.lvl1);
+            Level.levelactuelle[k].splice(0, Level.levelactuelle[k].length);
+          }*/
+          console.log(Level.lvl1);
           for (let i = 0; i < Level.tab.length; i++) {
             for (let j = 0; j < Level.tab[i].length; j++) {
               scene.remove(Level.tab[i][j]);
@@ -214,6 +222,9 @@ function spawnEnnemy(scene, camera) {
               j--;
             }
           }
+          
+          console.log(Level.levelactuelle);
+          console.log(Level.tab);
         }
         //boxHelper.update();
       }

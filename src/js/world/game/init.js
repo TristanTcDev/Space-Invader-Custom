@@ -14,8 +14,8 @@ function initGame(scene, camera) {
     plane.rotation.x = Math.PI / 2;
     scene.add( plane );
     createMenu();
-    scene.add(new THREE.AxesHelper(10))
-    scene.add(new THREE.GridHelper(20, 20))
+    scene.add(new THREE.AxesHelper(10));
+    scene.add(new THREE.GridHelper(20, 20));
     const areturn = spawnEnnemy(scene, camera);
     return areturn;
   }
