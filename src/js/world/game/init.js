@@ -13,12 +13,35 @@ function initGame(scene, camera) {
     plane.position.set(0, -1, 0);
     plane.rotation.x = Math.PI / 2;
     scene.add( plane );
+
+    createStar(scene);
     createMenu();
     scene.add(new THREE.AxesHelper(10));
     scene.add(new THREE.GridHelper(20, 20));
     const areturn = spawnEnnemy(scene, camera);
     return areturn;
   }
+
+function createStar( scene) {
+  let starBox = new THREE.BufferGeometry();
+  let vertices = {
+      positions: [],
+  };
+  for(let i = 0; i < 18000; i++) {
+      vertices.positions.push(Math.random() * 600 - 300);
+  }
+  starBox.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices.positions), 3));
+
+  //let spritestar = new THREE.TextureLoader().load( './src/medias/images/star.png' );
+  let starMaterial = new THREE.PointsMaterial({
+    color: 0xaaaaaa,
+    size: 0.7
+    //map: spritestar
+  });
+
+  let stars = new THREE.Points(starBox,starMaterial);
+  scene.add(stars);
+}
 
   function createMenu() {
     var creditBtn = document.createElement("BUTTON");
