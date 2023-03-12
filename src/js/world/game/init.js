@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { spawnEnnemy } from "./ennemy";
 import { musicANDsound, Level } from "./config";
+import { generateAbris } from "./abris";
 
 
 function initGame(scene, camera) {
@@ -19,6 +20,7 @@ function initGame(scene, camera) {
     scene.add(new THREE.AxesHelper(10));
     scene.add(new THREE.GridHelper(20, 20));
     const areturn = spawnEnnemy(scene, camera);
+    generateAbris(scene);
     return areturn;
   }
 

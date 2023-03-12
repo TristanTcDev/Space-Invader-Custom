@@ -9,10 +9,12 @@ async function loadPM(scene, camera) {
     const progressBar = document.getElementById('progress-bar');
 
     const progressBarManager = document.querySelector('.progress-bar-container');
+    console.log(progressBarManager);
 
-    loadingManager.onProgress = function(url, loaded, total) {
+    loadingManager.onProgress = function(url, loadedBytes, totalBytes) {
+        const progress = Math.round((loadedBytes / 28) * 100);
         progressBarManager.style.display = 'block';
-        progressBar.value = (loaded / total) * 100;
+        progressBar.value = progress;
         console.log(`Started loading: ${url}`);
     }
 
@@ -22,10 +24,29 @@ async function loadPM(scene, camera) {
     }
 
     const loader = new GLTFLoader(loadingManager);
-    Ennemy.ennemybodyData = await loader.loadAsync('./src/medias/models/yuumi/yuumi_animer.gltf');
-    Ennemy.ennemyModel = Ennemy.ennemybodyData.scene;
-    Player.bodyData = await loader.loadAsync('./src/medias/models/scene.gltf');
-    Player.playerModel = Player.bodyData.scene;
+    //editer les meshes": quand on veut enlever des trucs sur les skins
+    const promises = [  loader.loadAsync('./src/medias/models/pumpkin/yuumi_pumpkin.gltf'),  
+                        loader.loadAsync('./src/medias/models/pumpkin_ruby/yuumi_pumpkin_ruby.gltf'),  
+                        loader.loadAsync('./src/medias/models/pumpkin_pearl/yuumi_pumpkin_pearl.gltf'), 
+                        loader.loadAsync('./src/medias/models/pumpkin_obsidian/yuumi_pumpkin_obsidian.gltf'),
+                        loader.loadAsync('./src/medias/models/scene.gltf')
+                    ];
+
+    const [bodyData0, bodyData1, bodyData2, bodyData3, bodyData] = await Promise.all(promises);
+    
+    Ennemy.ennemybodyData[0] = bodyData0;
+    Ennemy.ennemyModel[0] = bodyData0.scene;
+    
+    Ennemy.ennemybodyData[1] = bodyData1;
+    Ennemy.ennemyModel[1] = bodyData1.scene;
+    
+    Ennemy.ennemybodyData[2] = bodyData2;
+    Ennemy.ennemyModel[2] = bodyData2.scene;
+
+    Ennemy.ennemybodyData[3] = bodyData3 ;
+    Ennemy.ennemyModel[3] = bodyData3.scene;
+    Player.bodyData = bodyData;
+    Player.playerModel = bodyData.scene;
 
 
 
@@ -42,7 +63,11 @@ async function loadPM(scene, camera) {
     Player.playerModel.position.set(0, -1, 10);
     Player.playerModel.rotation.y = Math.PI;
 
-    Ennemy.ennemyModel.scale.set(0.01, 0.01, 0.01);
+    for (let i = 0; i < Ennemy.ennemyModel.length; i++) {
+        Ennemy.ennemyModel[i].scale.set(0.01, 0.01, 0.01);
+    }
+
+    //Ennemy.ennemyModel[0].scale.set(0.01, 0.01, 0.01);
     //playAnimation(9);
 
 
@@ -52,21 +77,6 @@ async function loadPM(scene, camera) {
         model.position.x = Player.playerModel.position.x + i + 2;
         scene.add(model);
     }*/
-
-    Ennemy.ennemyModel.traverse( function ( child ) {
-
-        if ( child.isMesh ) {
-      
-            child.castShadow = true;
-            child.receiveShadow = true;
-             
-            child.material.clippingPlanes = [ localPlane ],
-            child.material.clipShadows = true,
-            child.material.side = THREE.DoubleSide
-      
-        }
-      
-    });
     //playAnimationEnnemy(13, 1, Ennemy.ennemybodyData, Ennemy.ennemyModel);
 
     const box = new THREE.Box3().setFromObject(Player.playerModel);

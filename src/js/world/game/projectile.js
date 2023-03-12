@@ -29,16 +29,35 @@ function createProjectileEnnemie(scene) {
     }
     console.log("nb iteration: " + bug);
 
-    playAnimationEnnemy(3,1, Ennemy.ennemybodyData, Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+    playAnimationEnnemy(3,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
     
     newProjectileEnnemy.position.set(Level.tab[numalienj][numalieni].position.x, Level.tab[0][0].position.y, Level.tab[numalienj][numalieni].position.z);
-    newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
+    switch (Level.levelactuelle[numalienj][numalieni]) {
+      case 1:
+        newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
+        break;
+      case 2:
+        newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
+        break;
+      case 3:
+        newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
+        break;
+      case 4:
+        newProjectileEnnemy.velocity = new THREE.Vector3(0, 0, Ennemy.projectilespeedEnnemy);
+        break;
+      default:
+        console.log("error dans projectile.js");
+        break;
+    }
+
     scene.add(newProjectileEnnemy);
     Ennemy.projectilesEnnemy.push(newProjectileEnnemy);
 
     setTimeout(function() {
-      console.log("play animation projennemy");
-      playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+      console.log("test");
+      if (Level.tab[numalienj][numalieni] != undefined) {
+        playAnimationEnnemy(13,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+      }
     }, 1900);
 
 

@@ -10,12 +10,11 @@ var center = new THREE.Vector3(0, 0, 0);
 function spawnEnnemy(scene, camera) {
     Level.wave++;
     if (Level.wave == 1) {
-      Level.levelactuelle = Level.lvl1.slice();
+      Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl1));
       console.log("ojdfosdgfoifgjfddg");
-      console.log(Level.levelactuelle);
     }
     else if (Level.wave == 2) {
-      Level.levelactuelle = Level.lvl2.slice();
+      Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl2));
       console.log(Level.levelactuelle);
     }
     else if (Level.wave == 3) {
@@ -30,11 +29,28 @@ function spawnEnnemy(scene, camera) {
       for (let i = 0; i < Level.nbcolonne; i++) {
         if (Level.levelactuelle[j][i] != 0) {
           console.log(Level.levelactuelle[j][i]);
+          let ennemie;
           //let sphere = new THREE.Mesh( geometry, normalMesh );
-          let ennemie = clone(Ennemy.ennemyModel);
+          switch (Level.levelactuelle[j][i]) {
+            case 1:
+              ennemie = clone(Ennemy.ennemyModel[0]);
+              break;
+            case 2:
+              ennemie = clone(Ennemy.ennemyModel[1]);
+              break;
+            case 3:
+              ennemie = clone(Ennemy.ennemyModel[3]);
+              break;
+            case 4:
+              ennemie = clone(Ennemy.ennemyModel[3]);
+              break;
+          }
+
+
+          //ennemie = clone(Ennemy.ennemyModel[0]);
           //sphere.castShadow = true;
           //sphere.receiveShadow = true;
-          ennemie.position.set(-7.8 + ecart, 0, -j);
+          ennemie.position.set(-7.8 + ecart, 0, -j * 1.5);
           scene.add(ennemie);
           Level.tab[j][i] = ennemie;
   
@@ -46,8 +62,8 @@ function spawnEnnemy(scene, camera) {
        }
       }
     }
-    for (let j = 0; j <= Level.nbligne-1; j++) {
-      for (let i = 0; i <= 9; i++) {
+    for (let j = Level.nbligne-1; j >= 0; j--) {
+      for (let i = 9; i >= 0; i--) {
         if (Level.tab[j][i] == 0) {
           Level.tab[j].splice(i, 1);
           Level.levelactuelle[j].splice(i, 1);
@@ -61,7 +77,7 @@ function spawnEnnemy(scene, camera) {
       Ennemy.ennemyaction[j] = [];
       for (let i = 0; i < Level.tab[j].length; i++) {
         Ennemy.ennemymixer[j][i] = new THREE.AnimationMixer(Level.tab[j][i]);
-        Ennemy.ennemyanim[j][i] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[j][i], j, i, Ennemy.ennemymixer[j][i]);
+        Ennemy.ennemyanim[j][i] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData[0], Level.tab[j][i], j, i, Ennemy.ennemymixer[j][i]);
         //playAnimationEnnemy(13,1, Ennemy.ennemybodyData, Level.tab[2][2], j, i);
       }
     }
@@ -87,9 +103,10 @@ function spawnEnnemy(scene, camera) {
             for (let i = 0; i < Level.tab[j].length; i++) {
               if (Level.tab[j][i] != undefined) {
                 Level.tab[j][i].position.x += Ennemy.ennemySpeed * delta;
-                if(Level.tab[j][i].position.x > Level.limdroite - Ennemy.radius  || Level.tab[j][i].position.x < - Level.limgauche + Ennemy.radius ) { 
+                if(Level.tab[j][i].position.x > Level.limdroite - Ennemy.radius  || Level.tab[j][i].position.x < - Level.limgauche + Ennemy.radius) {
                   Ennemy.ennemySpeed = -Ennemy.ennemySpeed;
-                  setTimeout(function() {
+                  if (Ennemy.estDescendu == false) {
+                    Ennemy.estDescendu = true;
                     for (let m = 0; m < Level.tab.length; m++) {
                       for (let n = 0; n < Level.tab[m].length; n++) {
                         if (Level.tab[m][n] != undefined) {
@@ -97,7 +114,11 @@ function spawnEnnemy(scene, camera) {
                         }
                       }
                     }
-                  }, 50)
+                    setTimeout(function() {
+                      Ennemy.estDescendu = false;
+                    }, 2000);
+                  }
+                  
                 }
               }
             }
@@ -153,6 +174,23 @@ function spawnEnnemy(scene, camera) {
                       //console.log(levelactuelle);
                       //console.log(tab);
                   }
+                  else {
+                    for (let l = 0; l < Level.abris.length; l++) {
+                      if (Player.projectiles[i] != undefined) {
+                        if (Player.projectiles[i].position.distanceTo(Level.abris[l].position) <= 1.5) {
+                          scene.remove(Player.projectiles[i]);
+                          Player.projectiles.splice(i, 1);
+                          Level.abris[l].scale.z -= 0.1;
+                          if (Level.abris[l].scale.z <= 0.1) {
+                            scene.remove(Level.abris[l]);
+                            Level.abris.splice(l, 1);
+                            l--;
+                          }
+                          i--;
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -177,9 +215,27 @@ function spawnEnnemy(scene, camera) {
                 Ennemy.projectilesEnnemy.splice(i, 1);
                 i--;
               }
+              else {
+                for (let j = 0; j < Level.abris.length; j++) {
+                  if (Ennemy.projectilesEnnemy[i] != undefined) {
+                    if (Ennemy.projectilesEnnemy[i].position.distanceTo(Level.abris[j].position) <= 1.5) {
+                      scene.remove(Ennemy.projectilesEnnemy[i]);
+                      Ennemy.projectilesEnnemy.splice(i, 1);
+                      Level.abris[j].scale.z -= 0.1;
+                      if (Level.abris[j].scale.z <= 0.1) {
+                        scene.remove(Level.abris[j]);
+                        Level.abris.splice(j, 1);
+                        j--;
+                      }
+                      i--;
+                    }
+                  }
+                }
+              }
+
           }
           if (Level.tab[0].length > 0) {
-              if (Ennemy.projectilesEnnemy.length <= Ennemy.projectilesmaxEnnemy) {
+              if (Ennemy.projectilesEnnemy.length < Ennemy.projectilesmaxEnnemy) {
               let aliennum = createProjectileEnnemie(scene);
               console.log("ça tire ! ???");
             }

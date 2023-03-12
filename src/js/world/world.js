@@ -15,6 +15,7 @@ import { loadPM } from './components/playerModel.js';
 import { playAnimation } from './game/animation.js';
 import { createProjectile } from './game/projectile.js';
 import { spawnEnnemy } from './game/ennemy.js';
+import { generateAbris } from './game/abris.js';
 
 
 
@@ -254,9 +255,17 @@ class World {
       Level.wave = 0;
       Player.vie = 3;
       Player.score = 0;
+      Player.animationPlayed = true;
       Level.tab.splice(0, Level.tab.length);
-      
+      playAnimation(9, 1, Player.bodyData, Player.playerModel);
       spawnEnnemy(this.#scene, this.#camera);
+      for (let i = 0; i < Level.abris.length; i++) {
+        this.#scene.remove(Level.abris[i]);
+        // splice every abris from Level.abris
+        Level.abris.splice(i, 1);
+        i--;
+      }
+      generateAbris(this.#scene);
     }
   }
 
