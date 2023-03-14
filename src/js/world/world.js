@@ -1,4 +1,9 @@
 import * as THREE from 'three';
+import vex from 'vex-js/dist/js/vex.combined.min.js';
+import 'vex-js/dist/css/vex.css';
+import 'vex-js/dist/css/vex-theme-default.css';
+import 'vex-js/dist/css/vex-theme-flat-attack.css';
+
 import { createRenderer }  from './systems/renderer.js';
 import { createControls }  from './systems/controls.js';
 import { createCamera }  from './components/camera.js';
@@ -19,6 +24,22 @@ import { generateAbris } from './game/abris.js';
 
 
 
+
+
+const contentClassName = 'vex-custom-content';
+const css = `
+.${contentClassName} {
+  white-space: pre-line;
+}`;
+const style = document.createElement('style');
+style.type = 'text/css';
+style.appendChild(document.createTextNode(css));
+document.head.appendChild(style);
+
+// configurer vex avec la classe CSS personnalisée
+vex.defaultOptions.className = 'vex-theme-os'
+vex.defaultOptions.contentClassName = contentClassName;
+
 class World {
 
   #camera
@@ -27,7 +48,6 @@ class World {
   #scene
   #loop
   #resizer
-  #keyboard
   #helpersLayer
   #counter
   #cameraTransitionInProgress
@@ -43,7 +63,7 @@ class World {
     //this.#resizer = new Resizer(container, this.#scene, this.#camera, this.#renderer);
     this.#loop = new Loop(this.#camera, this.#scene, this.#renderer);
     this.#loop.addUpdatable(this.#controls);
-    this.#keyboard = createKeyboard(container, this);
+    createKeyboard(container, this);
     this.#cameraTransitionInProgress = false;
     
     // Create the lights and hide the helpers layer
@@ -270,7 +290,16 @@ class World {
   }
 
   showHelp() {
-    console.log("Affiche de l'aide");
+    Level.paused = true;
+    vex.dialog.alert({
+      message: "H: Affiche le menu d'aide \n I: vous rend invincible \n ",
+      className: 'vex-theme-flat-attack', // Overwrites defaultOptions
+      // add a oncallback function
+      callback: function(value) {
+        console.log("test du callback");
+        Level.paused = false;
+      }
+  })
   }
 }
 

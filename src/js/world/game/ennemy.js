@@ -181,6 +181,7 @@ function spawnEnnemy(scene, camera) {
                           scene.remove(Player.projectiles[i]);
                           Player.projectiles.splice(i, 1);
                           Level.abris[l].scale.z -= 0.1;
+                          Level.abris[l].position.z -= 0.05;
                           if (Level.abris[l].scale.z <= 0.1) {
                             scene.remove(Level.abris[l]);
                             Level.abris.splice(l, 1);
@@ -222,6 +223,7 @@ function spawnEnnemy(scene, camera) {
                       scene.remove(Ennemy.projectilesEnnemy[i]);
                       Ennemy.projectilesEnnemy.splice(i, 1);
                       Level.abris[j].scale.z -= 0.1;
+                      Level.abris[j].position.z += 0.05;
                       if (Level.abris[j].scale.z <= 0.1) {
                         scene.remove(Level.abris[j]);
                         Level.abris.splice(j, 1);

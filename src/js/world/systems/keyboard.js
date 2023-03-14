@@ -1,45 +1,33 @@
-import { Key, Keyboard } from 'keyboard-ts'
+// import form the module keyboardjs
+import keyboardJS from 'keyboardjs';
+
 
 // Doc : https://www.npmjs.com/package/keyboard-ts
 
 function createKeyboard(container, world) {
 
   // make the container able to receive key events
-  container.tabIndex = 1;
-  container.focus();
 
-  const keyboard = new Keyboard(container);
-
-  keyboard.on([Key.Numpad0], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  keyboardJS.bind('num0', function (e) {
     world.changeCamera0();
-  })
-  keyboard.on([Key.Numpad1], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  keyboardJS.bind('num1', function (e) {
     world.changeCamera1();
-  })
-  keyboard.on([Key.Numpad2], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  keyboardJS.bind('num2', function (e) {
     world.changeCamera2();
-  })
-  keyboard.on([Key.LeftArrow], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  // left arrow
+  keyboardJS.bind('left', function (e) {
     world.mooveLeft();
-  })
-  keyboard.on([Key.RightArrow], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  // right arrow
+  keyboardJS.bind('right', function (e) {
     world.mooveRight();
-  })
-  keyboard.on([Key.Enter], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  keyboardJS.bind('enter', function (e) {
     world.restart();
-  })
+  });
 /*
 document.addEventListener("keydown", onDocumentKeyDown, false);
 
@@ -65,23 +53,18 @@ function onDocumentKeyDown(event) {
   }
 }*/
 
-
-  keyboard.on([Key.Space], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  keyboardJS.bind('space', function (e) {
     world.shoot();
-  })
-  keyboard.on([Key.I], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  keyboardJS.bind('i', function (e) {
     world.invincible();
-  })
-  keyboard.on([Key.K], event => {
-    // event is classic HTML event
-    event.preventDefault()
+  });
+  keyboardJS.bind('k', function (e) {
     world.killall();
-  })
-  return keyboard;
+  });
+  keyboardJS.bind('h', function (e) {
+    world.showHelp();
+  });
 }
 
 export { createKeyboard };

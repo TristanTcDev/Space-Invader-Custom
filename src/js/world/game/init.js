@@ -1,4 +1,5 @@
 import * as THREE from "three";
+
 import { spawnEnnemy } from "./ennemy";
 import { musicANDsound, Level } from "./config";
 import { generateAbris } from "./abris";
@@ -94,7 +95,7 @@ function createStar( scene) {
     quitBtn.style.top = "20px";
     quitBtn.style.left = "16%";
     quitBtn.onclick = function() {
-      alert("Quitter");
+      alert("Vous avez quitté le jeu");
     };
     document.body.appendChild(quitBtn);
 

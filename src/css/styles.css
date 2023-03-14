@@ -26,3 +26,11 @@ body {
     color: white;
     font-size: 2rem;
   }
+
+#info {
+    position: absolute;
+    left: 2%;
+    bottom: 85%;
+    display: none;
+    color: antiquewhite;
+  }
