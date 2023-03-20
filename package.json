@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/vex-js": "^2.3.30",
     "vite": "^3.1.0"
   },
   "dependencies": {
