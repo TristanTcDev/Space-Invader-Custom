@@ -29,7 +29,10 @@ function createProjectileEnnemie(scene) {
     }
     console.log("nb iteration: " + bug);
 
-    playAnimationEnnemy(3,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+    if (Ennemy.ennemyanim[numalienj][numalieni]._clip.name == "yuumi_crit01") {
+      return;
+    }
+    Ennemy.ennemyanim[numalienj][numalieni] = playAnimationEnnemy(3,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
     
     newProjectileEnnemy.position.set(Level.tab[numalienj][numalieni].position.x, Level.tab[0][0].position.y, Level.tab[numalienj][numalieni].position.z);
     switch (Level.levelactuelle[numalienj][numalieni]) {
@@ -56,7 +59,7 @@ function createProjectileEnnemie(scene) {
     setTimeout(function() {
       console.log("test");
       if (Level.tab[numalienj][numalieni] != undefined) {
-        playAnimationEnnemy(13,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
+        Ennemy.ennemyanim[numalienj][numalieni] = playAnimationEnnemy(13,1, Ennemy.ennemybodyData[0], Level.tab[numalienj][numalieni], numalienj, numalieni, Ennemy.ennemymixer[numalienj][numalieni]);
       }
     }, 1900);
 

@@ -34,3 +34,35 @@ body {
     display: none;
     color: antiquewhite;
   }
+
+#level-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  height: 8%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid white;
+  box-shadow: 0 0 10px white;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 150%;
+  color: white;
+  display: none;
+}
+  
+#level-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#canvas {
+  display: none;
+}
+
+.progress-bar-container[style*="display: none;"] + #canvas {
+  display: block;
+}

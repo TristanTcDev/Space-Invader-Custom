@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+
 import vex from 'vex-js/dist/js/vex.combined.min.js';
 import 'vex-js/dist/css/vex.css';
 import 'vex-js/dist/css/vex-theme-default.css';
@@ -83,7 +86,90 @@ class World {
   async init() {
     // Add asynchronous tasks (loading models for example)
     const PM = await loadPM(this.#scene, this.#camera);
+    this.#camera.lookAt(new THREE.Vector3(0, 10, -20));
     this.#scene.add(PM[0]);
+    this.#scene.add(PM[1][0]);
+    PM[1][0].position.set(-2, 20, -1);
+    this.#scene.add(PM[1][1]);
+    PM[1][1].position.set(-2, 18, -1);
+    this.#scene.add(PM[1][2]);
+    PM[1][2].position.set(-2, 16, -1);
+    this.#scene.add(PM[1][3]);
+    PM[1][3].position.set(-2, 14, -1);
+    //node_modules/three/examples/fonts/helvetiker_regular.typeface.json
+    const loader = new FontLoader();
+    const font = await loader.loadAsync( 'src/font/PressStart2P_Regular.json');
+
+    const smallEnnemygeometry = new TextGeometry( Ennemy.smallennemyscore + ' score', {
+      font: font,
+      size: 0.5,
+      height: 0.1,
+    } );
+
+    const mediumEnnemygeometry = new TextGeometry( Ennemy.mediumennemyscore + ' score', {
+      font: font,
+      size: 0.5,
+      height: 0.1,
+    } );
+
+    const bigEnnemygeometry = new TextGeometry( Ennemy.bigennemyscore + ' score', {
+      font: font,
+      size: 0.5,
+      height: 0.1,
+    } );
+
+    const bossEnnemygeometry = new TextGeometry( Ennemy.bossennemyscore + ' score', {
+      font: font,
+      size: 0.5,
+      height: 0.1,
+    } );
+    
+    const smallEnnemyText = new THREE.Mesh( smallEnnemygeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+    const mediumEnnemyText = new THREE.Mesh( mediumEnnemygeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+    const bigEnnemyText = new THREE.Mesh( bigEnnemygeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+    const bossEnnemyText = new THREE.Mesh( bossEnnemygeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+
+    smallEnnemyText.position.set(PM[1][0].position.x + 1, PM[1][0].position.y, PM[1][0].position.z + 0.2);
+    mediumEnnemyText.position.set(PM[1][1].position.x + 1, PM[1][1].position.y, PM[1][1].position.z + 0.2);
+    bigEnnemyText.position.set(PM[1][2].position.x + 1, PM[1][2].position.y, PM[1][2].position.z + 0.2);
+    bossEnnemyText.position.set(PM[1][3].position.x + 1, PM[1][3].position.y, PM[1][3].position.z + 0.2);
+
+    this.#scene.add( smallEnnemyText );
+    this.#scene.add( mediumEnnemyText );
+    this.#scene.add( bigEnnemyText );
+    this.#scene.add( bossEnnemyText );
+
+    
+
+    var plane = new THREE.Mesh( new THREE.PlaneGeometry( 30, 19 ) , new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide }) );
+    plane.position.set(0, 8, 5);
+
+    Level.loadingOjbects.push(PM[1][0]);
+    Level.loadingOjbects.push(PM[1][1]);
+    Level.loadingOjbects.push(PM[1][2]);
+    Level.loadingOjbects.push(PM[1][3]);
+    Level.loadingOjbects.push(smallEnnemyText);
+    Level.loadingOjbects.push(mediumEnnemyText);
+    Level.loadingOjbects.push(bigEnnemyText);
+    Level.loadingOjbects.push(plane);
+
+    this.#scene.add( plane );
     //this.#scene.add(PM[1]);
     this.#loop.addUpdatable(PM[0]);
     this.#loop.addUpdatable(PM[1]);
@@ -95,6 +181,11 @@ class World {
       model.scale.set(scale, scale, scale);
     }
     */
+  }
+
+  removeObjects() {
+    console.log(Level.loadingOjbects);
+    Level.loadingOjbects.forEach(obj => this.#scene.remove(obj));
   }
 
   render() {
@@ -290,16 +381,18 @@ class World {
   }
 
   showHelp() {
-    Level.paused = true;
-    vex.dialog.alert({
-      message: "H: Affiche le menu d'aide \n I: vous rend invincible \n ",
-      className: 'vex-theme-flat-attack', // Overwrites defaultOptions
-      // add a oncallback function
-      callback: function(value) {
-        console.log("test du callback");
-        Level.paused = false;
-      }
-  })
+    if (Level.started == true && !Level.paused && Level.tab[0].length > 0) {
+      Level.paused = true;
+      vex.dialog.alert({
+        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n",
+        className: 'vex-theme-flat-attack', // Overwrites defaultOptions
+        // add a oncallback function
+        callback: function(value) {
+          console.log("test du callback");
+          Level.paused = false;
+        }
+    })
+    }
   }
 }
 

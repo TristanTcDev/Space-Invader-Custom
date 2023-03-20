@@ -8,6 +8,7 @@ const Ennemy = {
   smallennemyscore: 10,
   mediumennemyscore: 20,
   bigennemyscore: 30,
+  bossennemyscore: 50,
 
   projectilesEnnemy: [],
   projectilespeedEnnemy: 0.1,
@@ -44,6 +45,7 @@ const musicANDsound = {
 };
 
 const Level = {
+  loadingOjbects: [],
   started: false,
   finished: false,
   paused: false,

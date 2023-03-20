@@ -147,13 +147,29 @@ function spawnEnnemy(scene, camera) {
                       if (Level.tab[k].length == 1) {
                         if (Level.tab.length == 1) {
                           Level.tab[k].splice(j, 1);
+                          Ennemy.ennemyanim[k].splice(j, 1);
+                          Ennemy.ennemymixer[k].splice(j, 1);
+                          Ennemy.ennemyaction[k].splice(j, 1);
                           spawnEnnemy(scene, camera);
+                          document.getElementById("level-container").style.display = "block";
+                          Level.paused = true;
+                          setTimeout(function() {
+                            document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
+                            document.getElementById("level-container").style.display = "none";
+                            Level.paused = false;
+                          }, 2000);
                         }
                         else {
                           Level.tab[k].splice(j, 1); // retire la sphère du tableau
                           Level.tab.splice(k, 1); // retire la ligne du tableau
                           Level.levelactuelle[k].splice(j, 1);
                           Level.levelactuelle.splice(k, 1);
+                          Ennemy.ennemyanim[k].splice(j, 1);
+                          Ennemy.ennemymixer[k].splice(j, 1);
+                          Ennemy.ennemyaction[k].splice(j, 1);
+                          Ennemy.ennemyanim.splice(k, 1);
+                          Ennemy.ennemymixer.splice(k, 1);
+                          Ennemy.ennemyaction.splice(k, 1);
                           k--;
                           j--;
                           scene.remove(Player.projectiles[i]); // Retirer le projectile de la scène
@@ -166,6 +182,9 @@ function spawnEnnemy(scene, camera) {
                       else {
                         Level.tab[k].splice(j, 1); // Retirer la sphère du tableau
                         Level.levelactuelle[k].splice(j, 1);
+                        Ennemy.ennemyanim[k].splice(j, 1);
+                        Ennemy.ennemymixer[k].splice(j, 1);
+                        Ennemy.ennemyaction[k].splice(j, 1);
                       }
                       scene.remove(Player.projectiles[i]); // Retirer le projectile de la scène
                       Player.projectiles.splice(i, 1); // Retirer le projectile du tableau

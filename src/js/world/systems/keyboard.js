@@ -26,6 +26,7 @@ function createKeyboard(container, world) {
     world.mooveRight();
   });
   keyboardJS.bind('enter', function (e) {
+    world.removeObjects();
     world.restart();
   });
 /*

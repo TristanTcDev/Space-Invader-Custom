@@ -50,6 +50,8 @@ async function loadPM(scene, camera) {
 
 
 
+
+
     let localPlane = new THREE.Plane( new THREE.Vector3( 0, 0.5, 0 ), 0.2 );
     //console.log(localPlane);
     let localPlaneHelper = new THREE.PlaneHelper( localPlane, 5, 0xffff00 );
