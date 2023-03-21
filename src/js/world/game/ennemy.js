@@ -39,7 +39,7 @@ function spawnEnnemy(scene, camera) {
               ennemie = clone(Ennemy.ennemyModel[1]);
               break;
             case 3:
-              ennemie = clone(Ennemy.ennemyModel[3]);
+              ennemie = clone(Ennemy.ennemyModel[2]);
               break;
             case 4:
               ennemie = clone(Ennemy.ennemyModel[3]);
@@ -281,16 +281,7 @@ function spawnEnnemy(scene, camera) {
             scene.remove(Ennemy.projectilesEnnemy[i]);
             Ennemy.projectilesEnnemy.splice(i, 1);
             i--;
-          }/*
-          for (let k = 0; k < Level.tab.length; k++){
-            for (let j = 0; j < Level.tab[k].length; j++) {
-              scene.remove(Level.tab[k][j]); // Retirer la sphère de la scène
-            }
-            Level.tab[k].splice(0, Level.tab[k].length); // Retirer les sphère du tableau
-            
-            //console.log(Level.lvl1);
-            Level.levelactuelle[k].splice(0, Level.levelactuelle[k].length);
-          }*/
+          }
           console.log(Level.lvl1);
           for (let i = 0; i < Level.tab.length; i++) {
             for (let j = 0; j < Level.tab[i].length; j++) {

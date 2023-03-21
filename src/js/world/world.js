@@ -86,42 +86,68 @@ class World {
   async init() {
     // Add asynchronous tasks (loading models for example)
     const PM = await loadPM(this.#scene, this.#camera);
-    this.#camera.lookAt(new THREE.Vector3(0, 10, -20));
+    this.#camera.lookAt(new THREE.Vector3(0, 18, -20));
+    this.#camera.position.y = this.#camera.position.y -2;
+    console.log(this.#camera.position);
     this.#scene.add(PM[0]);
     this.#scene.add(PM[1][0]);
-    PM[1][0].position.set(-2, 20, -1);
+    PM[1][0].position.set(-4, 18.5, -5);
     this.#scene.add(PM[1][1]);
-    PM[1][1].position.set(-2, 18, -1);
+    PM[1][1].position.set(-4, 17, -5);
     this.#scene.add(PM[1][2]);
-    PM[1][2].position.set(-2, 16, -1);
+    PM[1][2].position.set(-4, 15.5, -5);
     this.#scene.add(PM[1][3]);
-    PM[1][3].position.set(-2, 14, -1);
+    PM[1][3].position.set(-4, 14, -5);
     //node_modules/three/examples/fonts/helvetiker_regular.typeface.json
     const loader = new FontLoader();
     const font = await loader.loadAsync( 'src/font/PressStart2P_Regular.json');
 
-    const smallEnnemygeometry = new TextGeometry( Ennemy.smallennemyscore + ' score', {
+    const titlegeometry = new TextGeometry( 'Yuumi Invaders', {
+      font: font,
+      size: 1,
+      height: 0.1,
+    } );
+
+    const tableaudescoresgeometry = new TextGeometry( 'Table des scores', {
       font: font,
       size: 0.5,
       height: 0.1,
     } );
 
-    const mediumEnnemygeometry = new TextGeometry( Ennemy.mediumennemyscore + ' score', {
+    const smallEnnemygeometry = new TextGeometry( '= ' + Ennemy.smallennemyscore + ' points', {
       font: font,
       size: 0.5,
       height: 0.1,
     } );
 
-    const bigEnnemygeometry = new TextGeometry( Ennemy.bigennemyscore + ' score', {
+    const mediumEnnemygeometry = new TextGeometry( '= ' + Ennemy.mediumennemyscore + ' points', {
       font: font,
       size: 0.5,
       height: 0.1,
     } );
 
-    const bossEnnemygeometry = new TextGeometry( Ennemy.bossennemyscore + ' score', {
+    const bigEnnemygeometry = new TextGeometry( '= ' + Ennemy.bigennemyscore + ' points', {
       font: font,
       size: 0.5,
       height: 0.1,
+    } );
+
+    const bossEnnemygeometry = new TextGeometry( '= ' + Ennemy.bossennemyscore + ' points', {
+      font: font,
+      size: 0.5,
+      height: 0.1,
+    } );
+
+    const authorgeometry = new TextGeometry( 'Par : Tristan Taupiac', {
+      font: font,
+      size: 0.3,
+      height: 0,
+    } );
+
+    const entergeometry = new TextGeometry( 'Appuyez sur Entrée pour commencer', {
+      font: font,
+      size: 0.3,
+      height: 0,
     } );
     
     const smallEnnemyText = new THREE.Mesh( smallEnnemygeometry, [
@@ -144,21 +170,48 @@ class World {
       new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
     ] );
 
+    const titleText = new THREE.Mesh( titlegeometry, [
+      new THREE.MeshPhongMaterial( { color: 0x04BFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0x04BFFF } )
+    ] );
+
+    const tableaudescorestext = new THREE.Mesh( tableaudescoresgeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+    const authortext = new THREE.Mesh( authorgeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
+    const enterText = new THREE.Mesh( entergeometry, [
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ),
+      new THREE.MeshPhongMaterial( { color: 0xFFFFFF } )
+    ] );
+
 
     smallEnnemyText.position.set(PM[1][0].position.x + 1, PM[1][0].position.y, PM[1][0].position.z + 0.2);
     mediumEnnemyText.position.set(PM[1][1].position.x + 1, PM[1][1].position.y, PM[1][1].position.z + 0.2);
     bigEnnemyText.position.set(PM[1][2].position.x + 1, PM[1][2].position.y, PM[1][2].position.z + 0.2);
     bossEnnemyText.position.set(PM[1][3].position.x + 1, PM[1][3].position.y, PM[1][3].position.z + 0.2);
+    titleText.position.set(-9, 22, -5);
+    tableaudescorestext.position.set(-5.5, 20, -5);
+    authortext.position.set(-5, 21.5, -5);
+    enterText.position.set(-7, 12, -5);
 
     this.#scene.add( smallEnnemyText );
     this.#scene.add( mediumEnnemyText );
     this.#scene.add( bigEnnemyText );
     this.#scene.add( bossEnnemyText );
-
+    this.#scene.add( titleText );
+    this.#scene.add( tableaudescorestext );
+    this.#scene.add( authortext );
+    this.#scene.add( enterText );
     
 
-    var plane = new THREE.Mesh( new THREE.PlaneGeometry( 30, 19 ) , new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide }) );
-    plane.position.set(0, 8, 5);
+    //var plane = new THREE.Mesh( new THREE.PlaneGeometry( 30, 19 ) , new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide }) );
+    //plane.position.set(0, 8, 5);
 
     Level.loadingOjbects.push(PM[1][0]);
     Level.loadingOjbects.push(PM[1][1]);
@@ -167,9 +220,14 @@ class World {
     Level.loadingOjbects.push(smallEnnemyText);
     Level.loadingOjbects.push(mediumEnnemyText);
     Level.loadingOjbects.push(bigEnnemyText);
-    Level.loadingOjbects.push(plane);
+    Level.loadingOjbects.push(bossEnnemyText);
+    Level.loadingOjbects.push(titleText);
+    Level.loadingOjbects.push(tableaudescorestext);
+    Level.loadingOjbects.push(authortext);
+    Level.loadingOjbects.push(enterText);
+    //Level.loadingOjbects.push(plane);
 
-    this.#scene.add( plane );
+    //this.#scene.add( plane );
     //this.#scene.add(PM[1]);
     this.#loop.addUpdatable(PM[0]);
     this.#loop.addUpdatable(PM[1]);

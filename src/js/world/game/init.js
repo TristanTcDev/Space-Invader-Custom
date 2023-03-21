@@ -66,14 +66,7 @@ function createStar( scene) {
     startBtn.style.top = "20px";
     startBtn.style.left = "4%";
     startBtn.onclick = function() {
-      Level.started = true;
-      musicANDsound.musicArray["music_intro"].play();
-      setTimeout(function() {
-        musicANDsound.soundeffectArray["C_EST_PARTI"].play();
-      }, 5000);
-      setTimeout(function() {
-        musicANDsound.musicArray["music_ambiance"].play();
-      }, 16000);
+      console.log("Vous avez commencé le jeu");
     };
     document.body.appendChild(startBtn);
 
