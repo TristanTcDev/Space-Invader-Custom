@@ -339,37 +339,11 @@ class World {
   }
 
   mooveLeft() {
-    if (Level.started === true && Level.paused === false && Level.tab[0].length > 0) { // flèche gauche
-      gsap.to(Player.playerModel.position, {
-        duration: 0.1,
-        x: Player.playerModel.position.x - Player.playerSpeed,
-        ease: "linear",
-      });
-      if (Player.quelCamera == 1) {
-          gsap.to(this.#camera.position, {
-              duration: 0.1,
-              x: this.#camera.position.x - Player.playerSpeed,
-              ease: "linear",
-          });
-      }
-    }
+    /* fonction supprimer voir le Player.playerModel.tick dans playAnimation dans animation.js*/
   }
 
   mooveRight() {
-    if (Level.started === true && Level.paused === false && Level.tab[0].length > 0) { // flèche droite
-      gsap.to(Player.playerModel.position, {
-        duration: 0.1,
-        x: Player.playerModel.position.x + Player.playerSpeed,
-        ease: "linear",
-      });
-      if (Player.quelCamera == 1) {
-          gsap.to(this.#camera.position, {
-              duration: 0.1,
-              x: this.#camera.position.x + Player.playerSpeed,
-              ease: "linear",
-          });
-      }
-    }
+    /* fonction supprimer voir le Player.playerModel.tick dans playAnimation dans animation.js*/
   }
   shoot() {
     const self = this;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Player, Ennemy } from './config';
+import { Player, Ennemy, Level } from './config';
 //var mixer;
 var action;
 //var actionennemy;
@@ -14,13 +14,16 @@ function playAnimation(numAnim, speed = 1, data, model) {
 
       Player.playerModel.tick = (delta) =>  {
         mixer.update(delta);
-        if ( Player.mooveatright) {
-          Player.playerModel.position.x += Player.playerSpeed * delta;
-          Player.mooveatright = false;
+        if (Level.started === true && Level.paused === false && Level.tab[0].length > 0) { // flèche droite
+          if (Player.mooveRight) {
+            Player.playerModel.position.x += Player.playerSpeed * delta;
+          }
+          if (Player.mooveLeft) {
+            Player.playerModel.position.x -= Player.playerSpeed * delta;
+          }
         }
         //console.log(Player.playerModel.position.x);
         //Player.playerModel.position.x += Player.playerSpeed * delta;
-
       }
       action.paused = false;
   }

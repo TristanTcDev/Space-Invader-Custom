@@ -1,6 +1,6 @@
 // import form the module keyboardjs
 import keyboardJS from 'keyboardjs';
-import { Level, musicANDsound } from '../game/config';
+import { Level, Player, musicANDsound } from '../game/config';
 
 
 // Doc : https://www.npmjs.com/package/keyboard-ts
@@ -21,11 +21,19 @@ function createKeyboard(container, world) {
   });
   // left arrow
   keyboardJS.bind('left', function (e) {
+    Player.mooveLeft = true;
     world.mooveLeft();
+  }, (e) => {
+    Player.mooveLeft = false;
+    console.log("left released");
   });
   // right arrow
   keyboardJS.bind('right', function (e) {
+    Player.mooveRight = true;
     world.mooveRight();
+  }, (e) => {
+    Player.mooveRight = false;
+    console.log("right released");
   });
   keyboardJS.bind('enter', function (e) {
     if (gamestarted == false) {

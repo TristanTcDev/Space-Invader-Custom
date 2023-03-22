@@ -25,7 +25,9 @@ const Ennemy = {
 
 
 const Player = {
-  playerSpeed: 1,     
+  playerSpeed: 8,
+  mooveRight: false,
+  mooveLeft: false,
   projectiles: [],
   projectilespeed: 0.4,
   projectilesmaxPlayer: 1,
