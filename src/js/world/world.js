@@ -416,7 +416,7 @@ class World {
     if (Level.started == true && !Level.paused && Level.tab[0].length > 0) {
       Level.paused = true;
       vex.dialog.alert({
-        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n",
+        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n A: recrée les abris \n",
         className: 'vex-theme-flat-attack', // Overwrites defaultOptions
         // add a oncallback function
         callback: function(value) {
@@ -424,6 +424,18 @@ class World {
           Level.paused = false;
         }
     })
+    }
+  }
+
+  regenerateAbris() {
+    if (Level.started == true && !Level.paused && Level.tab[0].length > 0) {
+      for (let i = 0; i < Level.abris.length; i++) {
+        this.#scene.remove(Level.abris[i]);
+        // splice every abris from Level.abris
+        Level.abris.splice(i, 1);
+        i--;
+      }
+      generateAbris(this.#scene);
     }
   }
 }

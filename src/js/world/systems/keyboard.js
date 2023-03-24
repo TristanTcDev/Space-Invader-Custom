@@ -54,30 +54,6 @@ function createKeyboard(container, world) {
       world.restart();
     }
   });
-/*
-document.addEventListener("keydown", onDocumentKeyDown, false);
-
-function onDocumentKeyDown(event) {
-  switch (event.keyCode) {
-    case 37:
-      if (event.type == "keydown") {
-
-      }
-      break;
-    case 38:
-      console.log("Up arrow key was pressed");
-      break;
-    case 39:
-      console.log("Right arrow key was pressed");
-      break;
-    case 40:
-      console.log("Down arrow key was pressed");
-      break;
-    default:
-      console.log("Other key was pressed");
-      break;
-  }
-}*/
 
   keyboardJS.bind('space', function (e) {
     world.shoot();
@@ -90,6 +66,10 @@ function onDocumentKeyDown(event) {
   });
   keyboardJS.bind('h', function (e) {
     world.showHelp();
+  });
+  keyboardJS.bind('a', function (e) {
+    console.log("a");
+    world.regenerateAbris();
   });
 }
 

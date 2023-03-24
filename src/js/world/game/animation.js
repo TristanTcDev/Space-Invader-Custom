@@ -24,6 +24,7 @@ function playAnimation(numAnim, speed = 1, data, model) {
         }
         //console.log(Player.playerModel.position.x);
         //Player.playerModel.position.x += Player.playerSpeed * delta;
+        
       }
       action.paused = false;
   }

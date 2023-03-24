@@ -86,6 +86,13 @@ function spawnEnnemy(scene, camera) {
     Level.tab.tick = (delta) => {
       if (Player.quelCamera == 1) {
         camera.lookAt(Player.playerModel.position.x, 0, 0);
+        if (Player.mooveRight || Player.mooveLeft) {
+          camera.position.set(
+            Player.playerModel.position.x,
+            Player.playerModel.position.y + 3,
+            Player.playerModel.position.z + 3
+          );
+        }
       }
       else {
         camera.lookAt(center);
@@ -155,6 +162,7 @@ function spawnEnnemy(scene, camera) {
                           Level.paused = true;
                           setTimeout(function() {
                             document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
+                            console.log(document.getElementById("level-text").textContent);
                             document.getElementById("level-container").style.display = "none";
                             Level.paused = false;
                           }, 2000);
