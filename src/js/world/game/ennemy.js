@@ -19,6 +19,7 @@ function spawnEnnemy(scene, camera) {
     }
     else if (Level.wave == 3) {
       alert("Gagné");
+      Level.loose = true;
       return;
     }
     for (let i = 0; i < Level.nbligne; i++) {
@@ -110,7 +111,7 @@ function spawnEnnemy(scene, camera) {
             for (let i = 0; i < Level.tab[j].length; i++) {
               if (Level.tab[j][i] != undefined) {
                 Level.tab[j][i].position.x += Ennemy.ennemySpeed * delta;
-                if(Level.tab[j][i].position.x > Level.limdroite - Ennemy.radius  || Level.tab[j][i].position.x < - Level.limgauche + Ennemy.radius) {
+                if(Level.tab[j][i].position.x >= Level.limdroite - Ennemy.radius  || Level.tab[j][i].position.x <= - Level.limgauche + Ennemy.radius) {
                   Ennemy.ennemySpeed = -Ennemy.ennemySpeed;
                   if (Ennemy.estDescendu == false) {
                     Ennemy.estDescendu = true;
@@ -132,8 +133,7 @@ function spawnEnnemy(scene, camera) {
           }
         }
         for (let i = 0; i < Player.projectiles.length; i++) {
-          Player.projectiles[i].position.z -= Player.projectilespeed * delta;
-          console.log(Player.projectiles[i].velocity.z * delta);
+          Player.projectiles[i].position.add(Player.projectiles[i].velocity);
           // Vérifier si le projectile est sorti de la zone de jeu
           if (Player.projectiles[i].position.z < -10) {
             
@@ -273,13 +273,13 @@ function spawnEnnemy(scene, camera) {
         }
         if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 10) || Player.vie == 0) {
           //alert("Perdu !");
-          Level.loose = true;
           
           playAnimation(7,1, Player.bodyData, Player.playerModel);
           
           setTimeout(function() {
             action.paused = true;
             Level.started = false;
+            Level.loose = true;
           }, 1250);
           for (let i = 0; i < Player.projectiles.length; i++) {
             scene.remove(Player.projectiles[i]);
