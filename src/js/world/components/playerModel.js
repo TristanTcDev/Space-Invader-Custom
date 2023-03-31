@@ -24,7 +24,6 @@ async function loadPM(scene, camera) {
     }
 
     const loader = new GLTFLoader(loadingManager);
-    //editer les meshes": quand on veut enlever des trucs sur les skins
     const promises = [  loader.loadAsync('./src/medias/models/pumpkin/yuumi_pumpkin.gltf'),  
                         loader.loadAsync('./src/medias/models/pumpkin_ruby/yuumi_pumpkin_ruby.gltf'),  
                         loader.loadAsync('./src/medias/models/pumpkin_pearl/yuumi_pumpkin_pearl.gltf'), 

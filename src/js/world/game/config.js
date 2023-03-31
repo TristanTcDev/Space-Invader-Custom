@@ -29,7 +29,7 @@ const Player = {
   mooveRight: false,
   mooveLeft: false,
   projectiles: [],
-  projectilespeed: 0.4,
+  projectilespeed: 10,
   projectilesmaxPlayer: 1,
   invincible: false,
   playerModel: null,

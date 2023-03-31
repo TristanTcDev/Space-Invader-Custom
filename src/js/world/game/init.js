@@ -7,15 +7,6 @@ import { generateAbris } from "./abris";
 
 function initGame(scene, camera) {
     // add a plate
-    var geometryplate = new THREE.PlaneGeometry( 20, 20, 32 );
-    var materialplate = new THREE.MeshPhongMaterial( {color: 0xeeeeee, side: THREE.DoubleSide } );
-    var plane = new THREE.Mesh( geometryplate, materialplate );
-    plane.receiveShadow = true;
-
-    plane.position.set(0, -1, 0);
-    plane.rotation.x = Math.PI / 2;
-    scene.add( plane );
-
     createStar(scene);
     createMenu();
     scene.add(new THREE.AxesHelper(10));

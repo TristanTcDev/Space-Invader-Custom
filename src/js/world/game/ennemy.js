@@ -132,7 +132,8 @@ function spawnEnnemy(scene, camera) {
           }
         }
         for (let i = 0; i < Player.projectiles.length; i++) {
-          Player.projectiles[i].position.add(Player.projectiles[i].velocity);
+          Player.projectiles[i].position.z -= Player.projectilespeed * delta;
+          console.log(Player.projectiles[i].velocity.z * delta);
           // Vérifier si le projectile est sorti de la zone de jeu
           if (Player.projectiles[i].position.z < -10) {
             

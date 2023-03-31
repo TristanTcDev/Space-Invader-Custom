@@ -72,7 +72,7 @@ function createProjectile(scene) {
   if (Player.projectiles.length >= Player.projectilesmaxPlayer) return;
   var newProjectile = new THREE.Mesh(boxGeometry, boxMaterial);
   newProjectile.position.set(Player.playerModel.position.x, Player.playerModel.position.y + 1, Player.playerModel.position.z - 1.2);
-  newProjectile.velocity = new THREE.Vector3(0, 0, - Player.projectilespeed);
+  newProjectile.velocity = new THREE.Vector3(0, 0, - Player.projectilespeed );
   scene.add(newProjectile);
   Player.projectiles.push(newProjectile);
 }
