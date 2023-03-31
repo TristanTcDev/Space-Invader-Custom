@@ -7,24 +7,40 @@ import { generateAbris } from "./abris";
 
 function initGame(scene, camera) {
     // add a plate
+    /*
+    var geometryplate = new THREE.PlaneGeometry( 20, 20, 32 );
+    var materialplate = new THREE.MeshPhongMaterial( {color: 0xeeeeee, side: THREE.DoubleSide } );
+    var plane = new THREE.Mesh( geometryplate, materialplate );
+    plane.receiveShadow = true;
+
+    plane.position.set(0, -1, 0);
+    plane.rotation.x = Math.PI / 2;
+    scene.add( plane );*/
+
     createStar(scene);
     createMenu();
-    scene.add(new THREE.AxesHelper(10));
-    scene.add(new THREE.GridHelper(20, 20));
+    /*scene.add(new THREE.AxesHelper(10));
+    scene.add(new THREE.GridHelper(20, 20));*/
     const areturn = spawnEnnemy(scene, camera);
     generateAbris(scene);
     return areturn;
   }
 
 function createStar( scene) {
-  let starBox = new THREE.BufferGeometry();
-  let vertices = {
+  Level.starbox = new THREE.BufferGeometry();
+  Level.verticestar = {
       positions: [],
+      accelerations: [],
+      velocities: []
   };
-  for(let i = 0; i < 18000; i++) {
-      vertices.positions.push(Math.random() * 600 - 300);
+  for(let i = 0; i < 5000; i++) {
+    Level.verticestar.positions.push(Math.random() * 600 - 300);
+      if (i % 3 === 0) {
+        Level.verticestar.accelerations.push(0)
+        Level.verticestar.velocities.push(.2)
+      }
   }
-  starBox.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices.positions), 3));
+  Level.starbox.setAttribute('position', new THREE.BufferAttribute(new Float32Array(Level.verticestar.positions), 3));
 
   //let spritestar = new THREE.TextureLoader().load( './src/medias/images/star.png' );
   let starMaterial = new THREE.PointsMaterial({
@@ -33,8 +49,8 @@ function createStar( scene) {
     //map: spritestar
   });
 
-  let stars = new THREE.Points(starBox,starMaterial);
-  scene.add(stars);
+  Level.stars = new THREE.Points(Level.starbox,starMaterial);
+  scene.add(Level.stars);
 }
 
   function createMenu() {
