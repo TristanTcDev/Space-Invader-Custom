@@ -14,13 +14,17 @@
         <progress id="progress-bar" max="100" value="0"></progress>
     </div>
     <div id="canvas"></div>
+    <div id="hearts-container"></div>
     <div id="level-container">
         <div id="level-text">LEVEL : 1</div>
     </div>
-<script type="module" src="./src/js/maintest.js"></script>
-<script> 
-javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
-</script> 
+    <div id="score-container">
+        <span id="score-text">Score : 0</span>
+    </div>
+    <script type="module" src="./src/js/maintest.js"></script>
+    <script> 
+        javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+    </script> 
 
 </body>
 </html>
