@@ -2,12 +2,12 @@ import { Clock } from 'three';
 import * as THREE from 'three';
 
 //import { GlitchEffect, EffectPass } from 'postprocessing';
-//import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-//import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 //import { EffectPass } from 'three/examples/jsm/postprocessing/EffectPass.js';
-//import { GlitchEffect } from 'three/examples/jsm/postprocessing/GlitchEffect.js';
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
 //import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { RenderPixelatedPass, EffectComposer, RenderPass, UnrealBloomPass } from 'three-stdlib';
+//import { RenderPixelatedPass, EffectComposer, RenderPass, UnrealBloomPass } from 'three-stdlib';
 
 import { Level } from '../game/config';
 
@@ -23,9 +23,7 @@ class Loop {
   #updatables
   #clock
 
-  #renderPass
   #composer
-  #effectPass
 
   constructor(camera, scene, renderer) {
     this.#camera = camera;
@@ -35,10 +33,9 @@ class Loop {
     this.#paused = false;
     this.#clock = new Clock();
 
-    this.#renderPass = new RenderPass(this.#scene, this.#camera);
     this.#composer = new EffectComposer(this.#renderer);
-    this.#composer.addPass(this.#renderPass);
-
+    this.#composer.addPass( new RenderPass(this.#scene, this.#camera) );
+    /*
     const bloomEffect = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
       1.5,
@@ -49,18 +46,15 @@ class Loop {
     this.#composer.addPass(pixelrend);
     
     this.#composer.addPass(bloomEffect);
-    
-    this.#renderer.toneMapping = THREE.CineonToneMapping;
-    this.#renderer.toneMappingExposure = 1;
+      */
 
 
-    //const glitcheffect = new GlitchEffect();
-    //this.#effectPass = new EffectPass(this.#camera, new GlitchEffect());
-    //this.#effectPass.renderToScreen = true;
-    //this.#composer.addPass(this.#effectPass);
-    console.log(this.#composer.passes);
-    this.#composer.removePass(pixelrend);
-    console.log(this.#composer.passes);
+    const glitcheffect = new GlitchPass();
+    this.#composer.addPass(glitcheffect);
+    //this.#composer.removePass(glitcheffect);
+    //console.log(this.#composer.passes);
+    //this.#composer.removePass(pixelrend);
+    //console.log(this.#composer.passes);
   }
 
   start() {
@@ -68,8 +62,8 @@ class Loop {
       // tell every animated object to tick forward one frame
       if (Level.started) {
         this.#composer.render();
-      }
       this.tick();
+      }
       // render a frame
       //this.#renderer.render(this.#scene, this.#camera);
     });
@@ -101,6 +95,16 @@ class Loop {
   tick() {
     if (this.#paused) return;
 
+    for(let i = 0; i < Level.verticestar.velocities.length; i++) {
+      Level.verticestar.velocities[i / 3 + i % 3] += Level.verticestar.accelerations[i];
+      Level.verticestar.positions[i * 3 + 1] -= Level.verticestar.velocities[i];
+      if(Level.verticestar.positions[i*3 +1] < -200) {
+        Level.verticestar.positions[i * 3 + 1] = 400;
+          Level.verticestar.velocities[i / 3 + i % 3] = 0;
+      }
+    }
+    Level.stars.rotation.y += 0.002;
+    Level.starbox.setAttribute('position', new THREE.BufferAttribute(new Float32Array(Level.verticestar.positions), 3));
     
     // only call the getDelta function once per frame!
     const delta = this.#clock.getDelta(); 

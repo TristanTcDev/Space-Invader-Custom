@@ -7,6 +7,8 @@ function SoundGestion() {
     musicANDsound.soundeffectArray["douleur_1"] = new buzz.sound("src/medias/sounds/douleur_1.mp3");
     musicANDsound.soundeffectArray["douleur_2"] = new buzz.sound("src/medias/sounds/douleur_2.mp3");
     musicANDsound.soundeffectArray["douleur_3"] = new buzz.sound("src/medias/sounds/douleur_3.mp3");
+    musicANDsound.soundeffectArray["corkishoot"] = new buzz.sound("src/medias/sounds/corkishoot.mp3");
+    musicANDsound.soundeffectArray["corkishoot"].setVolume(60);
 
 
     musicANDsound.musicArray["music_intro"] = new buzz.sound("src/medias/sounds/music_intro.mp3");

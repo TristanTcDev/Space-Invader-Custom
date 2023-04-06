@@ -14,6 +14,19 @@ function createLights(scene, helpersLayer) {
   keyLight.castShadow = true;
 
   scene.add( keyLight);
+/*
+  const keyLightHelper = new THREE.DirectionalLightHelper(keyLight);
+  const shadowHelper = new THREE.CameraHelper(keyLight.shadow.camera);
+  
+  const helpersGroup = new THREE.Group();
+  helpersGroup.add(keyLightHelper, shadowHelper);  
+  
+  // Put helpers in a separate layer
+  helpersGroup.traverse( (child) => {
+    child.layers.set(helpersLayer);
+  })
+  
+  scene.add(helpersGroup);*/
 }
 
 export { createLights };

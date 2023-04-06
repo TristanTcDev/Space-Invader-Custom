@@ -17,7 +17,7 @@ import { createKeyboard }  from './systems/keyboard.js';
 import { Loop }            from './systems/loop.js';
 import { gsap } from "gsap";
 import { initGame } from './game/init.js';
-import { Player, Level, Ennemy } from './game/config.js';
+import { Player, Level, Ennemy, musicANDsound } from './game/config.js';
 import { SoundGestion } from './game/sound.js';
 import { loadPM } from './components/playerModel.js';
 import { playAnimation } from './game/animation.js';
@@ -89,7 +89,7 @@ class World {
     this.#camera.lookAt(new THREE.Vector3(0, 18, -20));
     this.#camera.position.y = this.#camera.position.y -2;
     console.log(this.#camera.position);
-    this.#scene.add(PM[0]);
+    this.#scene.add(PM[0][0]);
     this.#scene.add(PM[1][0]);
     PM[1][0].position.set(-4, 18.5, -5);
     this.#scene.add(PM[1][1]);
@@ -309,9 +309,9 @@ class World {
       const self = this;
       gsap.to(this.#camera.position, {
           duration: 0.5,
-          x: Player.playerModel.position.x,
-          y: Player.playerModel.position.y + 3,
-          z: Player.playerModel.position.z + 3,
+          x: Player.playerModel[0].position.x,
+          y: Player.playerModel[0].position.y + 3,
+          z: Player.playerModel[0].position.z + 3,
           onComplete: function() {
             self.#cameraTransitionInProgress = false;
           }
@@ -349,14 +349,14 @@ class World {
     const self = this;
     if (Level.tab[0].length > 0 && Player.projectiles.length < Player.projectilesmaxPlayer && Level.started && !Level.paused && Player.animationPlayed) {
       Player.animationPlayed = false;    
-      playAnimation(2, 2, Player.bodyData, Player.playerModel);
+      playAnimation(2, 2, Player.bodyData, Player.playerModel[0]);
       setTimeout(function() {
         createProjectile( self.#scene);
         
       }, 150);
       setTimeout(function() {
         if (Player.vie > 0) {
-          playAnimation(9, 1, Player.bodyData, Player.playerModel);
+          playAnimation(9, 1, Player.bodyData, Player.playerModel[0]);
           Player.animationPlayed = true
         }
       }, 300);
@@ -388,10 +388,22 @@ class World {
         Level.levelactuelle[k].splice(0, Level.levelactuelle[k].length);
       }
       spawnEnnemy(this.#scene, this.#camera);
+      document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
+      document.getElementById("level-container").style.display = "block";
+      Level.paused = true;
+      setTimeout(function() {
+        document.getElementById("level-container").style.display = "none";
+        Level.paused = false;
+      }, 2000);
     }
   }
   restart() {
     if (Level.loose) {
+      Ennemy.projectilespeedEnnemy = 8;
+      Ennemy.projectilesmaxEnnemy = 1;
+      Ennemy.ennemySpeed = 2;
+      const heartsContainer = document.getElementById('hearts-container');
+      heartsContainer.innerHTML = ''; // Supprimer toutes les images de coeur existantes
       Level.started = true;
       Level.loose = false;
       Level.paused = false;
@@ -400,13 +412,19 @@ class World {
       Player.score = 0;
       Player.animationPlayed = true;
       Level.tab.splice(0, Level.tab.length);
-      playAnimation(9, 1, Player.bodyData, Player.playerModel);
+      playAnimation(9, 1, Player.bodyData, Player.playerModel[0]);
       spawnEnnemy(this.#scene, this.#camera);
       for (let i = 0; i < Level.abris.length; i++) {
         this.#scene.remove(Level.abris[i]);
         // splice every abris from Level.abris
         Level.abris.splice(i, 1);
         i--;
+      }
+      for (let i = 0; i < Player.vie; i++) {
+        const heartImage = document.createElement('img');
+        heartImage.style.width = '75px';
+        heartImage.src = './src/medias/images/heart.png';
+        heartsContainer.appendChild(heartImage);
       }
       generateAbris(this.#scene);
     }
@@ -416,7 +434,7 @@ class World {
     if (Level.started == true && !Level.paused && Level.tab[0].length > 0) {
       Level.paused = true;
       vex.dialog.alert({
-        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n A: recrée les abris \n",
+        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n A: recrée les abris \n S: coupe les sons \n M: coupe la musique \n Espace: tire \n Flèche directionnelle : se déplacé \n",
         className: 'vex-theme-flat-attack', // Overwrites defaultOptions
         // add a oncallback function
         callback: function(value) {
@@ -436,6 +454,19 @@ class World {
         i--;
       }
       generateAbris(this.#scene);
+    }
+  }
+
+  stopsound() {
+    for(let sound in musicANDsound.soundeffectArray){
+      musicANDsound.soundeffectArray[sound].toggleMute();
+      console.log(musicANDsound.soundeffectArray[sound].isMuted);
+    }
+  }
+  stopmusic() {
+    for(let sound in musicANDsound.musicArray){
+      musicANDsound.musicArray[sound].toggleMute();
+      console.log(musicANDsound.musicArray[sound].isMuted);
     }
   }
 }

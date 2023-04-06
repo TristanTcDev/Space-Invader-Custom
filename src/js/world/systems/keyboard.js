@@ -1,11 +1,13 @@
 // import form the module keyboardjs
 import keyboardJS from 'keyboardjs';
 import { Level, Player, musicANDsound } from '../game/config';
+import buzz from 'buzz';
 
 
 // Doc : https://www.npmjs.com/package/keyboard-ts
 
-var gamestarted = false
+var gamestarted = false;
+var originalsound = true;
 function createKeyboard(container, world) {
 
   // make the container able to receive key events
@@ -25,7 +27,6 @@ function createKeyboard(container, world) {
     world.mooveLeft();
   }, (e) => {
     Player.mooveLeft = false;
-    console.log("left released");
   });
   // right arrow
   keyboardJS.bind('right', function (e) {
@@ -33,18 +34,22 @@ function createKeyboard(container, world) {
     world.mooveRight();
   }, (e) => {
     Player.mooveRight = false;
-    console.log("right released");
   });
   keyboardJS.bind('enter', function (e) {
     if (gamestarted == false) {
-      console.log("start");
+      const heartsContainer = document.getElementById('hearts-container');
+      for (let i = 0; i < Player.vie; i++) {
+        const heartImage = document.createElement('img');
+        heartImage.style.width = '75px';
+        heartImage.src = './src/medias/images/heart.png';
+        heartsContainer.appendChild(heartImage);
+      }
+      document.getElementById('score-text').style.display = 'block';
       gamestarted = true;
       Level.started = true;
       world.removeObjects();
       musicANDsound.musicArray["music_intro"].play();
-      setTimeout(function() {
-        musicANDsound.soundeffectArray["C_EST_PARTI"].play();
-      }, 5000);
+      musicANDsound.soundeffectArray["C_EST_PARTI"].play()
       setTimeout(function() {
         musicANDsound.musicArray["music_ambiance"].play();
       }, 16000);
@@ -59,17 +64,42 @@ function createKeyboard(container, world) {
     world.shoot();
   });
   keyboardJS.bind('i', function (e) {
+    e.preventRepeat();
     world.invincible();
   });
   keyboardJS.bind('k', function (e) {
+    e.preventRepeat();
     world.killall();
   });
   keyboardJS.bind('h', function (e) {
+    e.preventRepeat();
     world.showHelp();
   });
   keyboardJS.bind('a', function (e) {
+    e.preventRepeat();
     console.log("a");
     world.regenerateAbris();
+  });
+  keyboardJS.bind('s', function (e) {
+    e.preventRepeat();
+    console.log("s");
+    world.stopsound();
+  });
+  keyboardJS.bind('m', function (e) {
+    e.preventRepeat();
+    console.log("m");
+    world.stopmusic();
+  });
+  keyboardJS.bind('p + e + w', function (e) {
+    e.preventRepeat();
+    if (originalsound) {
+      musicANDsound.soundeffectArray["corkishoot"] = new buzz.sound("src/medias/sounds/pew.mp3");
+      originalsound = false;
+    }
+    else {
+      musicANDsound.soundeffectArray["corkishoot"] = new buzz.sound("src/medias/sounds/corkishoot.mp3");
+      originalsound = true;
+    }
   });
 }
 

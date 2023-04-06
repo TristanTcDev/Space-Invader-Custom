@@ -11,7 +11,7 @@ const Ennemy = {
   bossennemyscore: 50,
 
   projectilesEnnemy: [],
-  projectilespeedEnnemy: 0.1,
+  projectilespeedEnnemy: 8,
   projectilesmaxEnnemy: 1,
 
   ennemyModel: [],
@@ -25,15 +25,16 @@ const Ennemy = {
 
 
 const Player = {
-  playerSpeed: 8,
+  playerSpeed: 12,
   mooveRight: false,
   mooveLeft: false,
   projectiles: [],
-  projectilespeed: 10,
+  projectilespeed: 24,
   projectilesmaxPlayer: 1,
   invincible: false,
-  playerModel: null,
+  playerModel: [],
   bodyData: null,
+  playerprojectileModel: null,
   animationPlayed: true,
   score: 0,
   quelCamera: 0,
@@ -65,33 +66,31 @@ const Level = {
           [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
           [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]],*/
 
-  lvl1: [[0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+  lvl1: [[0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
           [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
           [0, 0, 2, 0, 2, 0, 2, 0, 0, 0],
-          [0, 0, 2, 0, 0, 0, 2, 0, 0, 0],
-          [3, 0, 0, 0, 3, 0, 0, 0, 3, 0]],
+          [0, 0, 0, 2, 0, 2, 0, 0, 0, 0],
+          [0, 0, 0, 0, 3, 0, 0, 0, 0, 0]],
 
   lvl2: [[1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+          [0, 1, 0, 1, 0, 1, 0, 1, 0, 0],
+          [0, 0, 2, 0, 2, 0, 2, 0, 0, 0],
+          [0, 0, 0, 2, 2, 2, 0, 0, 0, 0],
+          [0, 0, 2, 3, 3, 3, 2, 0, 0, 0]],
+
+  lvl3: [[1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
           [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
           [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
           [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
           [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]],
 
-  lvl3: [[],],
+  lvl4: [[],],
   wave: 0,
   abris: [],
-}
 
-//------------------------------- Maison ---
-const houseConfig = {
-    shutters: { //--- volets
-      openProbability: 0.75,  // probabilité d'avoir des volets ouverts
-      open: true,             // les volets sont ouverts ou fermés ?
-    },
+  verticestar: null,
+  stars: null,
+  starbox: null,
 };
-
-function randHouseConfig(n) {
-  rowOfHousesConfig.housesWidth = 0;
-}
 
 export { Ennemy, Player, Level, musicANDsound };

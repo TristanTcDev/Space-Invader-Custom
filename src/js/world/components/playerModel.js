@@ -24,14 +24,17 @@ async function loadPM(scene, camera) {
     }
 
     const loader = new GLTFLoader(loadingManager);
+    //editer les meshes": quand on veut enlever des trucs sur les skins
     const promises = [  loader.loadAsync('./src/medias/models/pumpkin/yuumi_pumpkin.gltf'),  
                         loader.loadAsync('./src/medias/models/pumpkin_ruby/yuumi_pumpkin_ruby.gltf'),  
                         loader.loadAsync('./src/medias/models/pumpkin_pearl/yuumi_pumpkin_pearl.gltf'), 
                         loader.loadAsync('./src/medias/models/pumpkin_obsidian/yuumi_pumpkin_obsidian.gltf'),
-                        loader.loadAsync('./src/medias/models/scene.gltf')
+                        loader.loadAsync('./src/medias/models/projectile/ennemieProjectile/scene.gltf'),
+                        loader.loadAsync('./src/medias/models/projectile/playerProjectile/scene.gltf'),
+                        loader.loadAsync('./src/medias/models/playerModel/corkioldalien.gltf')
                     ];
 
-    const [bodyData0, bodyData1, bodyData2, bodyData3, bodyData] = await Promise.all(promises);
+    const [bodyData0, bodyData1, bodyData2, bodyData3, projectileData, playerprojectileData, bodyData] = await Promise.all(promises);
     
     Ennemy.ennemybodyData[0] = bodyData0;
     Ennemy.ennemyModel[0] = bodyData0.scene;
@@ -44,29 +47,47 @@ async function loadPM(scene, camera) {
 
     Ennemy.ennemybodyData[3] = bodyData3 ;
     Ennemy.ennemyModel[3] = bodyData3.scene;
+
+    Ennemy.ennemybodyData[4] = projectileData;
+    Ennemy.ennemyModel[4] = projectileData.scene;
+
+    
+
+    console.log(Ennemy.ennemyModel[4].position);
+
+
     Player.bodyData = bodyData;
-    Player.playerModel = bodyData.scene;
+    Player.playerModel[0] = bodyData.scene;
+
+    //Player.playerprojectileData = playerprojectileData;
+    Player.playerModel[1] = playerprojectileData.scene;
 
 
 
 
 
-    let localPlane = new THREE.Plane( new THREE.Vector3( 0, 0.5, 0 ), 0.2 );
+    /*let localPlane = new THREE.Plane( new THREE.Vector3( 0, 0.5, 0 ), 0.2 );
     //console.log(localPlane);
     let localPlaneHelper = new THREE.PlaneHelper( localPlane, 5, 0xffff00 );
-    scene.add( localPlaneHelper );
+    scene.add( localPlaneHelper );*/
 
 
 
-    playAnimation(8, 1, Player.bodyData, Player.playerModel);
+    playAnimation(8, 1, Player.bodyData, Player.playerModel[0]);
     //scaleModel(playerModel, 0.01);
-    Player.playerModel.scale.set(0.01, 0.01, 0.01);
-    Player.playerModel.position.set(0, -1, 10);
-    Player.playerModel.rotation.y = Math.PI;
+    Player.playerModel[0].scale.set(0.01, 0.01, 0.01);
+    Player.playerModel[0].position.set(0, -1, 10);
+    Player.playerModel[0].rotation.y = Math.PI;
 
     for (let i = 0; i < Ennemy.ennemyModel.length; i++) {
         Ennemy.ennemyModel[i].scale.set(0.01, 0.01, 0.01);
     }
+
+    Ennemy.ennemyModel[4].scale.set(10, 20, 10);
+    Ennemy.ennemyModel[4].rotation.x = Math.PI / 2;
+
+    Player.playerModel[1].scale.set(0.4, 0.4, 0.4);
+    Player.playerModel[1].rotation.y = Math.PI / 2;
 
     //Ennemy.ennemyModel[0].scale.set(0.01, 0.01, 0.01);
     //playAnimation(9);
@@ -80,9 +101,9 @@ async function loadPM(scene, camera) {
     }*/
     //playAnimationEnnemy(13, 1, Ennemy.ennemybodyData, Ennemy.ennemyModel);
 
-    const box = new THREE.Box3().setFromObject(Player.playerModel);
+    /*const box = new THREE.Box3().setFromObject(Player.playerModel);
     const boxHelper = new THREE.BoxHelper(Player.playerModel, 0xff0000);
-    scene.add(boxHelper);
+    scene.add(boxHelper);*/
     //scene.add(Ennemy.ennemyModel);
     return [Player.playerModel, Ennemy.ennemyModel];
 }

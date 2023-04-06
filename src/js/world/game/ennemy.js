@@ -11,13 +11,18 @@ function spawnEnnemy(scene, camera) {
     Level.wave++;
     if (Level.wave == 1) {
       Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl1));
-      console.log("ojdfosdgfoifgjfddg");
     }
     else if (Level.wave == 2) {
       Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl2));
-      console.log(Level.levelactuelle);
+      Ennemy.projectilespeedEnnemy += 0.5;
+      Ennemy.ennemySpeed += 0.5;
     }
     else if (Level.wave == 3) {
+      Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl3));
+      Ennemy.projectilespeedEnnemy += 1;
+      Ennemy.ennemySpeed += 0.5;
+    }
+    else if (Level.wave == 4) {
       alert("Gagné");
       Level.loose = true;
       return;
@@ -86,27 +91,26 @@ function spawnEnnemy(scene, camera) {
 
     Level.tab.tick = (delta) => {
       if (Player.quelCamera == 1) {
-        camera.lookAt(Player.playerModel.position.x, 0, 0);
+        camera.lookAt(Player.playerModel[0].position.x, 0, 0);
         if (Player.mooveRight || Player.mooveLeft) {
           camera.position.set(
-            Player.playerModel.position.x,
-            Player.playerModel.position.y + 3,
-            Player.playerModel.position.z + 3
+            Player.playerModel[0].position.x,
+            Player.playerModel[0].position.y + 3,
+            Player.playerModel[0].position.z + 3
           );
         }
       }
       else {
         camera.lookAt(center);
       }
-      if (Player.playerModel.position.x < -Level.limgauche) {
-        Player.playerModel.position.x = -Level.limgauche;
+      if (Player.playerModel[0].position.x < -Level.limgauche) {
+        Player.playerModel[0].position.x = -Level.limgauche;
       }
-      if (Player.playerModel.position.x > Level.limdroite) {
-        Player.playerModel.position.x = Level.limdroite;
+      if (Player.playerModel[0].position.x > Level.limdroite) {
+        Player.playerModel[0].position.x = Level.limdroite;
       }
       if(Level.started && !Level.paused && Level.tab[0].length > 0) {
         if (!Player.invincible) {
-          // ce uqi est en dessous est à enlever plsu tard pour update via le tick rate
           for (let j = 0; j < Level.tab.length; j++) {
             for (let i = 0; i < Level.tab[j].length; i++) {
               if (Level.tab[j][i] != undefined) {
@@ -133,14 +137,14 @@ function spawnEnnemy(scene, camera) {
           }
         }
         for (let i = 0; i < Player.projectiles.length; i++) {
-          Player.projectiles[i].position.add(Player.projectiles[i].velocity);
+          Player.projectiles[i].position.z -= Player.projectilespeed * delta;
           // Vérifier si le projectile est sorti de la zone de jeu
           if (Player.projectiles[i].position.z < -10) {
-            
             scene.remove(Player.projectiles[i]);
             Player.projectiles.splice(i, 1);
             i--;
           }
+          // Permet de vérifier si le projectile touche un ennemi et d'attribuer les points
           for (let k = 0; k < Level.tab.length; k++) {
             for (let j = 0; j < Level.tab[k].length; j++) {
               if (Level.tab[k][j] != undefined) {
@@ -149,28 +153,33 @@ function spawnEnnemy(scene, camera) {
                       if (Level.levelactuelle[k][j] == 1) addScore(Ennemy.smallennemyscore, k, j, scene);
                       else if (Level.levelactuelle[k][j] == 2) addScore(Ennemy.mediumennemyscore, k, j, scene);
                       else if (Level.levelactuelle[k][j] == 3) addScore(Ennemy.bigennemyscore, k, j, scene);
+                      else if (Level.levelactuelle[k][j] == 4) addScore(Ennemy.bossennemyscore, k, j, scene);
+                      document.getElementById("score-text").textContent = "Score : " + (Player.score);
                       console.log(Player.score);
-                      scene.remove(Level.tab[k][j]); // Retirer la sphère de la scène
+                      scene.remove(Level.tab[k][j]);
                       
                       if (Level.tab[k].length == 1) {
+
+                        // Permet de charger le niveau suivant
                         if (Level.tab.length == 1) {
                           Level.tab[k].splice(j, 1);
                           Ennemy.ennemyanim[k].splice(j, 1);
                           Ennemy.ennemymixer[k].splice(j, 1);
                           Ennemy.ennemyaction[k].splice(j, 1);
                           spawnEnnemy(scene, camera);
+                          document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
                           document.getElementById("level-container").style.display = "block";
                           Level.paused = true;
                           setTimeout(function() {
-                            document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
-                            console.log(document.getElementById("level-text").textContent);
                             document.getElementById("level-container").style.display = "none";
                             Level.paused = false;
                           }, 2000);
                         }
+                        
+                        // Supprime l'ennemie toucher 
                         else {
-                          Level.tab[k].splice(j, 1); // retire la sphère du tableau
-                          Level.tab.splice(k, 1); // retire la ligne du tableau
+                          Level.tab[k].splice(j, 1);
+                          Level.tab.splice(k, 1);
                           Level.levelactuelle[k].splice(j, 1);
                           Level.levelactuelle.splice(k, 1);
                           Ennemy.ennemyanim[k].splice(j, 1);
@@ -181,27 +190,27 @@ function spawnEnnemy(scene, camera) {
                           Ennemy.ennemyaction.splice(k, 1);
                           k--;
                           j--;
-                          scene.remove(Player.projectiles[i]); // Retirer le projectile de la scène
-                          Player.projectiles.splice(i, 1); // Retirer le projectile du tableau
+                          scene.remove(Player.projectiles[i]); 
+                          Player.projectiles.splice(i, 1);
                           i--;
                           break;
                           //console.log(tab);
                         }
                       }
+
+                      // Supprime l'ennemie toucher
                       else {
-                        Level.tab[k].splice(j, 1); // Retirer la sphère du tableau
+                        Level.tab[k].splice(j, 1);
                         Level.levelactuelle[k].splice(j, 1);
                         Ennemy.ennemyanim[k].splice(j, 1);
                         Ennemy.ennemymixer[k].splice(j, 1);
                         Ennemy.ennemyaction[k].splice(j, 1);
                       }
-                      scene.remove(Player.projectiles[i]); // Retirer le projectile de la scène
-                      Player.projectiles.splice(i, 1); // Retirer le projectile du tableau
+                      scene.remove(Player.projectiles[i]);
+                      Player.projectiles.splice(i, 1);
                       i--;
-                      //break;
-                      //console.log(levelactuelle);
-                      //console.log(tab);
                   }
+                  // Permet de vérifier si le projectile touche un abris
                   else {
                     for (let l = 0; l < Level.abris.length; l++) {
                       if (Player.projectiles[i] != undefined) {
@@ -225,25 +234,31 @@ function spawnEnnemy(scene, camera) {
             }
           }
         }
+
+        // Permet de faure bouger les projectile ennemies
         if (!Player.invincible) {
           for (let i = 0; i < Ennemy.projectilesEnnemy.length; i++) {
-            Ennemy.projectilesEnnemy[i].position.add(Ennemy.projectilesEnnemy[i].velocity);
+            Ennemy.projectilesEnnemy[i].position.z += Ennemy.projectilespeedEnnemy * delta;
             // Vérifier si le projectile est sorti de la zone de jeu
             if (Ennemy.projectilesEnnemy[i].position.z > 10) {  
                 scene.remove(Ennemy.projectilesEnnemy[i]);
                 Ennemy.projectilesEnnemy.splice(i, 1);
                 i--;
               }
-            else if (Ennemy.projectilesEnnemy[i].position.distanceTo(Player.playerModel.position) <= 1.5) {
+            // Vérifier si le projectile touche le joueur
+            else if (Ennemy.projectilesEnnemy[i].position.distanceTo(Player.playerModel[0].position) <= 1.5) {
                 console.log("playerModel toucher");
                 if(Player.vie >= 3) musicANDsound.soundeffectArray["douleur_1"].play();
                 else if(Player.vie == 2) musicANDsound.soundeffectArray["douleur_2"].play();
                 else if(Player.vie == 1) musicANDsound.soundeffectArray["douleur_3"].play();
                 Player.vie -= 1;
+                const heartsContainer = document.getElementById('hearts-container');
+                heartsContainer.removeChild(heartsContainer.lastChild);
                 scene.remove(Ennemy.projectilesEnnemy[i]);
                 Ennemy.projectilesEnnemy.splice(i, 1);
                 i--;
               }
+              // Vérifier si le projectile touche un abris
               else {
                 for (let j = 0; j < Level.abris.length; j++) {
                   if (Ennemy.projectilesEnnemy[i] != undefined) {
@@ -264,17 +279,17 @@ function spawnEnnemy(scene, camera) {
               }
 
           }
+          // Permet de crée les projectile ennmie
           if (Level.tab[0].length > 0) {
               if (Ennemy.projectilesEnnemy.length < Ennemy.projectilesmaxEnnemy) {
               let aliennum = createProjectileEnnemie(scene);
-              console.log("ça tire ! ???");
             }
           }
         }
-        if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 10) || Player.vie == 0) {
-          //alert("Perdu !");
+        // Verifie si le joueur est mort ou si les aliens sont trop proche
+        if ((Level.tab[0].length != 0 && Level.tab[0][0].position.z > 8) || Player.vie == 0) {
           
-          playAnimation(7,1, Player.bodyData, Player.playerModel);
+          playAnimation(7,1, Player.bodyData, Player.playerModel[0]);
           
           setTimeout(function() {
             action.paused = true;
