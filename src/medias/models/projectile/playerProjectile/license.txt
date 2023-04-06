@@ -1,0 +1,11 @@
+Model Information:
+* title:	Ice Projectile
+* source:	https://sketchfab.com/3d-models/ice-projectile-b512c437852a4473a21b4bd25b785f93
+* author:	xiangyang.dong (https://sketchfab.com/xiangyang.dong)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Ice Projectile" (https://sketchfab.com/3d-models/ice-projectile-b512c437852a4473a21b4bd25b785f93) by xiangyang.dong (https://sketchfab.com/xiangyang.dong) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
