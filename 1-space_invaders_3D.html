@@ -21,8 +21,45 @@
     <div id="score-container">
         <span id="score-text">Score : 0</span>
     </div>
+    <div id="image-button-container">
+        <div class="image-button" id="image-button-1" onclick="changeMusicImage()">
+            <!-- Contenu du premier bouton -->
+            <img id="image-music" src="src/medias/images/music-icon.png" alt="Bouton 1" width="50" height="50">
+        </div>
+        <div class="image-button" id="image-button-2" onclick="changeSoundImage()">
+            <!-- Contenu du deuxième bouton -->
+            <img id="image-sound" src="src/medias/images/sound-full-icon.png" alt="Bouton 2" width="50" height="50">
+        </div>
+    </div>
     <script type="module" src="./src/js/maintest.js"></script>
-    <script> 
+    <script>
+        var musicState = 0;
+        var soundState = 0;
+
+        // Fonction pour changer l'image lorsque le bouton 1 est cliqué
+        function changeMusicImage() {
+            var image = document.getElementById("image-music");
+            console.log(image);
+            if (imageState === 0) {
+                image.src = "src/medias/images/music-icon.png"; // Remplacez "nouvelle_image1.png" par le chemin de la première nouvelle image que vous souhaitez afficher
+                imageState = 1; // Mettre à jour l'état de l'image
+            } else {
+                image.src = "src/medias/images/music-off-icon.png"; // Remplacez "image1.png" par le chemin de l'image de base
+                imageState = 0; // Mettre à jour l'état de l'image
+            }
+        }
+        function changeSoundImage() {
+            var image = document.getElementById("image-sound");
+            if (soundState === 0) {
+                image.src = "src/medias/images/sound-full-icon.png"; // Remplacez "nouvelle_image1.png" par le chemin de la première nouvelle image que vous souhaitez afficher
+                soundState = 1; // Mettre à jour l'état de l'image
+            } else {
+                image.src = "src/medias/images/volume-mute-icon.png"; // Remplacez "image1.png" par le chemin de l'image de base
+                soundState = 0; // Mettre à jour l'état de l'image
+            }
+        }
+    
+
         javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
     </script> 
 
