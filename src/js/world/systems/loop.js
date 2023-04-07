@@ -9,11 +9,11 @@ import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
 //import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 //import { RenderPixelatedPass, EffectComposer, RenderPass, UnrealBloomPass } from 'three-stdlib';
 
-import { Level } from '../game/config';
+import { Level, Player } from '../game/config';
 
 
 // Doc : https://discoverthreejs.com/book/first-steps/animation-loop/
-
+var timeElapse = 0;
 class Loop {
 
   #camera
@@ -51,6 +51,7 @@ class Loop {
 
     const glitcheffect = new GlitchPass();
     this.#composer.addPass(glitcheffect);
+    this.#composer.passes[1].enabled = false;
     //this.#composer.removePass(glitcheffect);
     //console.log(this.#composer.passes);
     //this.#composer.removePass(pixelrend);
@@ -109,6 +110,20 @@ class Loop {
     // only call the getDelta function once per frame!
     const delta = this.#clock.getDelta(); 
     //console.log(delta);
+
+    timeElapse += delta;
+    if (Player.tookdamage === true) {
+       this.#composer.passes[1].enabled = true;
+       this.#composer.passes[1].goWild = true;
+       console.log(this.#composer.passes[1]);
+       setTimeout(() => {
+        console.log("eh oh faut marcher")
+        this.#composer.passes[1].enabled = false;
+        this.#composer.passes[1].goWild = false;
+       }, 500);      
+       Player.tookdamage = false;
+    }
+    
 
     for (const object of this.#updatables) {
       object.tick(delta);

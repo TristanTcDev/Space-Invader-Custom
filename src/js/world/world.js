@@ -410,6 +410,7 @@ class World {
       Level.wave = 0;
       Player.vie = 3;
       Player.score = 0;
+      document.getElementById("score-text").textContent = "Score : " + (Player.score);
       Player.animationPlayed = true;
       Level.tab.splice(0, Level.tab.length);
       playAnimation(9, 1, Player.bodyData, Player.playerModel[0]);

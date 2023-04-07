@@ -23,7 +23,12 @@ function spawnEnnemy(scene, camera) {
       Ennemy.ennemySpeed += 0.5;
     }
     else if (Level.wave == 4) {
-      alert("Gagné");
+      Level.levelactuelle = JSON.parse(JSON.stringify(Level.lvl4));
+      Ennemy.projectilespeedEnnemy += 1;
+      Ennemy.ennemySpeed += 2;
+      Ennemy.projectilesmaxEnnemy += 2;
+    }
+    else if (Level.wave == 5) {
       Level.loose = true;
       return;
     }
@@ -214,7 +219,7 @@ function spawnEnnemy(scene, camera) {
                   else {
                     for (let l = 0; l < Level.abris.length; l++) {
                       if (Player.projectiles[i] != undefined) {
-                        if (Player.projectiles[i].position.distanceTo(Level.abris[l].position) <= 1.5) {
+                        if ((Player.projectiles[i].position.distanceTo(Level.abris[l].position) <= 1.5) && (Player.invincible == false)) {
                           scene.remove(Player.projectiles[i]);
                           Player.projectiles.splice(i, 1);
                           Level.abris[l].scale.z -= 0.1;
@@ -252,6 +257,7 @@ function spawnEnnemy(scene, camera) {
                 else if(Player.vie == 2) musicANDsound.soundeffectArray["douleur_2"].play();
                 else if(Player.vie == 1) musicANDsound.soundeffectArray["douleur_3"].play();
                 Player.vie -= 1;
+                Player.tookdamage = true;
                 const heartsContainer = document.getElementById('hearts-container');
                 heartsContainer.removeChild(heartsContainer.lastChild);
                 scene.remove(Ennemy.projectilesEnnemy[i]);
