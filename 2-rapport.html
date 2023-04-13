@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport Projet Space Invaders 3D</title>
+  <link rel="stylesheet" href="./rapport/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Projet Space Invaders 3D</h1>
+    <h2>par Tristan Taupiac</h2>
+  </header>
+  <section>
+    <h3>Introduction</h3>
+    <p> Ce projet consistait à la création d'un jeu dans le style de Space Invaders. Cependant il fallait que ce jeu soit fait en 3D avec l'aide la librairie Threejs.</p>
+    <p> Le nom du jeu afficher est Yuumi invader étant donné que les modèles des ennemies viennent du personnage ce nommant Yuumi du jeu League of Legend, le modèle du joueur vient du même jeu et ce nomme Corki.</p>
+  </section>
+  <section>
+    <h3>Technologies Utilisées</h3>
+    <p>Dans ce projet, les technologies suivantes ont été utilisé :</p>
+    <ul>
+      <li>Three.js - Pour créer les graphismes 3D du jeu.</li>
+      <li>Buzz.js - Pour crée et gérer les musiques et les sounds effects.</li>
+      <li>Gsap - Permet de faire des animations de caméra "lisse" et fluide.</li>
+      <li>KeyboardJS - Sert à gérer les différentes touches du clavier.</li>
+      <li>Vexjs - Pour permettre à l'utilisateur d'afficher le menu d'aide.</li>
+    </ul>
+  </section>
+  <section>
+    <h3>Architecture Logicielle</h3>
+    <p>J'ai suivi l'arborescence suivante pour la création du jeu :</p>
+    <pre>
+Projet_Taupiac_Tristan
+├── 1-space_invaders_3D.html
+├── 2-rapport.html
+├── node_modules
+├── package.json
+├── rapport
+│   ├── css
+│   ├── html
+│   └── images
+└── src
+    ├───css
+    │   └───styles.css
+    │
+    ├───font
+    │   ├───OFL.txt
+    │   ├───PressStart2P-Regular.ttf
+    │   └───PressStart2P_Regular.json
+    │
+    ├───html
+    │   └───1-space_invaders_3D.html
+    │
+    ├───js
+    │   ├───main.js
+    │   │
+    │   └───world
+    │       │   world.js
+    │       │
+    │       ├───components
+    │       │       camera.js
+    │       │       lights.js
+    │       │       Model.js
+    │       │       scene.js
+    │       │
+    │       ├───game
+    │       │       abris.js
+    │       │       animation.js
+    │       │       config.js
+    │       │       game.js
+    │       │       init.js
+    │       │       projectile.js
+    │       │       score.js
+    │       │
+    │       └───systems
+    │               keyboard.js
+    │               loop.js
+    │               renderer.js
+    │               sound.js 
+    │
+    └───medias
+        ├───images
+        │
+        ├───models
+        │   │
+        │   ├───playerModel
+        │   │
+        │   ├───projectile
+        │   │   ├───ennemieProjectile
+        │   │   └───playerProjectile             
+        │   │
+        │   ├───pumpkin
+        │   ├───pumpkin_obsidian
+        │   ├───pumpkin_pearl
+        │   ├───pumpkin_ruby
+        │
+        └───sounds
+    </pre>
+    <p> Cette structure permet l'arrangement suivant :</p>
+      <li> Le dossier components contient les différents composants de la scène, comme la caméra, la lumière, les différents model, la scène.</li>
+      <li> Le dossier game contient les différents éléments du jeu, comme les abris, le jeu en lui même, les projectiles, le score.</li>
+      <li> Le dossier systems contient les différents systèmes du jeu, comme les contrôles, le clavier, la boucle de jeu, le rendu et le sons.</li>
+  </section>
+  <section>
+    <h3>Graphisme</h3>
+    <p> La majorité des graphisme de ce jeu ont été fait à partir de modèle 3D, seul les abris ainsi que les étoiles en fond sont crée à l'aide de la librairie three JS.</p>
+    <p> Les animations des personnages était déjà faites dans les modèles 3D, j'ai donc juste du les importer et les utiliser dans le jeu.</p>
+    <p> L'effet post-processing utilisé est le "GlitchPass" qui ce déclenche lorsque le joueur prend des dégats, permettant d'en plus d'un son jouer en fond lui faire comprendre qu'il a perdu un point de vie.</p>
+    <p> Voici quelque capture d'écrans pour illustrer le jeu :</p>
+    <figure class="grid-container">
+      <img src="./rapport/img/main_menu.png" alt="Menu de démarrage"  class="main_menu">
+      <figcaption class="main_menu_caption">Menu de démarrage</figcaption>
+      <img src="./rapport/img/game.png" alt="Image du Jeu" class=" game">
+      <figcaption class="game_caption">Image du jeu</figcaption>
+      <img src="./rapport/img/game_fp.png" alt="Vue première personne" class="game_fp">
+      <figcaption class="game_fp_caption">Vue "première personne"</figcaption>
+      <img src="./rapport/img/glitcheffect.png" alt="Effet post-processing" class="glitcheffect">
+      <figcaption class="glitcheffect_caption">Effet post-processing</figcaption>
+    </figure>
+  </section>
+  <section>
+    <h3>Dialogues avec l'utilisateur et camera </h3>
+    <p>Pour permettre à l'utilisateur de jouer au jeu, j'ai mis en place plusieurs dialogues avec lui, notamment :
+      <li> Des changements de caméra possible en appuyant sur les touches 0, 1 et 2 de son pavé numérique</li>
+      <li> Un menu d'aide en appuyant sur la touche H réaliser via Vexjs</li>
+      <li> Des message de transition au centre de l'écran permettant de savoir lorsqu'il passe un niveau</li>
+    </p>
+      <p>Voici une capture d'écran du menu d'aide</p>
+      <img src="./rapport/img/help_menu.png" alt="Menu d'aide">
+  </section>
+  <section>
+    <h3>Gestion des Collisions</h3>
+    <p> Les différentes collisions sont gérer via la fonction distanceTo(), une fonction permettant de connaître la distance entre un point et un autre, ici entre notre projectile et les ennemie ou les abris. </p>
+    <p> Si la distance est inférieur à un certain seuil, alors on considère que les deux objets sont en collision et disparaissent donc, pour l'abris il va réduire de taille puis disparaitrent.</p>
+    <p> L'abris a la particularité de réduire de taille en fonction du côté où il est touché, voici une capture d'écran pour illustrer ceci, nous pouvons voir que la 2eme abris a réduit d'un côté tandis que le 3eme a réduit de l'autre côté.</p>
+    <img src="./rapport/img/abris.png" alt="Abris">
+  </section>
+  <section>
+    <h3>Dynamique</h3>
+    <p> A chaque niveau la difficulté va augmenter que ce soit via une augmentation de la vitesse ou du nombre de projectile ennemie, une amélioration de leur précision en faisant qu'il y a de plus en plus de chance que l'ennemie qui tir soit en face du joueur.</p>
+    <p> Voici une capture d'écran pour montrer l'évolution de la difficulté : </p>
+    <img src="./rapport/img/difficulte.png" alt="Difficulté">
+</section>
+
+<section>
+  <h3>Intelligence artificiel</h3>
+  <p>Le système "d'intelligence artificiel" a été réalisé de manière assez simple mais efficace, plus le nombre de vague augmente plus le jeu va vérifier que l'ennemie qui tir est proche du joueur sur l'axe X, la fonction permettant de faire ça est trouvable à la ligne 23 du fichier projectile.js.</p>
+  <p> Ce système est surtout visible à partir du niveau 4 étant donné que plusieurs ennemies vont tirer en même temps.</p>
+</section>
+
+<section>
+  <h3>Audio</h3>
+  <p>Pour la gestion de l'audio la librairie Buzz a été utilisé, permettant de mettre et coupé la musique assez facilement via la touche M pour la musique et S pour les sons ou en cliquant sur l'un des logo à l'écran.</p>
+  <p> Le son de tir attend que le précédent son de tir soit terminer pour ce lancer, cela permet d'éviter au joueur d'avoir des sons qui ce superpose et qui pourrait être donc trop fort.</p>
+</section>
+<section>
+  <h3>Interface Utilisateur</h3>
+  <p> L'interface utilisateur ce veut assez simpliste permettant d'éviter de surcharger le joueur d'informations.</p>
+  <p> Nous pouvons y trouver le nombre de coeur ainsi que le score en haut à gauche. La partie audio, elle, est trouvable en haut à droite permettant de couper ou non la musique.</p>
+  <p> Capture d'écran illustrant les informations afficher à l'écran :</p>
+  <img src="./rapport/img/ui.png" alt="Interface utilisateur" width="1800">
+</section>
+<section>
+  <h3> Petit Plus</h3>
+  <p> Le jeu fonctionne via un système de "tickrate" et permet à l'utilisateur, quelque soit son nombre d'image par seconde, de faire que tout ce déroule tout le temps à la même vitesse. Ce TickRate est utilisé via une clock.</p>
+  <p> Il suffit de préciser dans le code que X chose doit être update (visible dans le fichier loop.js, la fonction addUpdatable) et comme ça à chaque tick ce qui doit être update le sera. Cette fonction permet donc d'éviter d'avoir plusieurs loop d'animations.</p>
+  <p> Tout ce qui est en rapport avec les statistique du joueur et des ennemies et des niveaux sont modifiable assez facilement dans config.js.</p>
+  <p> Une commande secrète a était caché dans le code vous pouvez essayer de la retrouver si vous souhaitez ;)</p>
+  <p>Voici une vidéo montrant une démonstration du jeu et prouvant que chaque niveau est possible </p>
+  <iframe width="700" height="441" src="https://www.youtube.com/embed/ebsIPvU3N3A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</section>
+<section>
+  <h3>Références</h3>
+  <p> Sketchfab a été utilisé pour l'utilisation des projectiles lancer par le joueur et par celui des ennemies.</p>
+  <p>Remerciement Spécial à Riot Games, m'ayant autoriser l'utilisation de leur modèles pour ce jeu.</p>
+  <img src="./rapport/img/riotgame.png" alt="Riot Games", width="200px">
+  <img src="./rapport/img/sketchfab.png" alt="sketchfab", width="100px">
+</section>
+</body>
+</html>

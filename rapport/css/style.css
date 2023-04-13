@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;700&display=swap');
+/* Style pour le header */
+body {
+    margin: 0;
+}
+header {
+    background-color: #000;
+    color: #fff;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    text-align: center;
+    background-image: radial-gradient(ellipse farthest-corner at top center, #00a6ff 0%, #00478b 100%);
+    border-bottom: 10px solid #00488b15;    
+}
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+  }
+h1 {
+  font-size: 48px;
+  margin: 0;
+}
+h2 {
+  font-size: 22px;
+  margin: 10px;
+}
+/* Style pour les sections */
+section {
+  margin: 30px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+}
+h3 {
+  margin: 0 0 20px;
+  font: 32px 'Open Sans', sans-serif;
+  font-weight: 700;
+  border-bottom: 3px solid #00a6ff;
+}
+p {
+  font-size: 16px; /* Augmentation de la taille du texte */
+  line-height: 1.5;
+  font: 16px 'Open Sans', sans-serif;
+}
+/* Style pour les listes à puces */
+ul {
+  font-size: 18px; /* Augmentation de la taille du texte */
+  line-height: 1.5;
+  margin: 0 0 20px;
+  padding: 0 0 0 20px;
+}
+li {
+  list-style-type: disc;
+  margin-bottom: 10px;
+  font: 16px 'Open Sans', sans-serif;
+}
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-family: monospace;
+  padding: 10px;
+}
+figure {
+    border: thin #c0c0c0 solid;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap : 5px;
+}
+
+figure img {
+    max-width: 100%;
+    height: auto;
+  }
+
+figcaption {
+    background-color: #222;
+    color: #fff;
+    font: italic smaller sans-serif;
+    padding: 3px;
+    text-align: center;
+    height: 20px;
+}
+
+.main_menu {grid-area: 1 / 1 / 2 / 2;}
+.main_menu_caption {grid-area: 2 / 1 / 3 / 2;}
+
+.game {grid-area: 1 / 2 / 2 / 3;}
+.game_caption {grid-area: 2 / 2 / 3 / 3;}
+
+.game_fp {grid-area: 3 / 1 / 4 / 2;}
+.game_fp_caption {grid-area: 4 / 1 / 5 / 2;}
+
+.glitcheffect {grid-area: 3 / 2 / 4 / 3;}
+.glitcheffect_caption {grid-area: 4 / 2 / 5 / 3;}
