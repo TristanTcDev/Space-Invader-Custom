@@ -18,11 +18,12 @@ function createProjectileEnnemie(scene) {
     let numalienj = getRandomInt(Level.tab.length);
     let numalieni = getRandomInt(Level.tab[numalienj].length);
 
-    let bug = 0;
-    while (Math.abs(Level.tab[numalienj][numalieni].position.x - Player.playerModel[0].position.x) > 10 / Level.wave && bug < 100 ) {
+    let maxboucle = 0;
+    // Plus le nombre de vague augmente plus la probabilité que l'ennemie qui tir soit en face du joueur augmente
+    while (Math.abs(Level.tab[numalienj][numalieni].position.x - Player.playerModel[0].position.x) > 10 / Level.wave && maxboucle < 100 ) {
       numalienj = getRandomInt(Level.tab.length);
       numalieni = getRandomInt(Level.tab[numalienj].length);
-      bug++;
+      maxboucle++;
     }
 
     if (Ennemy.ennemyanim[numalienj][numalieni]._clip.name == "yuumi_crit01") {

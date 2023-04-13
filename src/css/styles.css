@@ -57,6 +57,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 600px;
 }
 
 #canvas {
@@ -91,7 +92,7 @@ body {
 #score-text {
   font-family: 'PressStart2P', sans-serif;
   font-size: 16px;
-  color: #fff; /* Couleur du texte */
+  color: #fff;
   display: none;
 }
 #image-button-container {
@@ -100,6 +101,7 @@ body {
   right: 10px;
   display: flex;
   height: 20;
+  display: none;
 }
 
 .image-button {

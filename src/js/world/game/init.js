@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-import { spawnEnnemy } from "./ennemy";
-import { musicANDsound, Level, Player } from "./config";
+import { spawnEnnemy } from "./game";
+import { Level } from "./config";
 import { generateAbris } from "./abris";
 
 

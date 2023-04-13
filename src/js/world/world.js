@@ -8,7 +8,6 @@ import 'vex-js/dist/css/vex-theme-default.css';
 import 'vex-js/dist/css/vex-theme-flat-attack.css';
 
 import { createRenderer }  from './systems/renderer.js';
-import { createControls }  from './systems/controls.js';
 import { createCamera }  from './components/camera.js';
 import { createScene }  from './components/scene.js';
 import { createLights } from './components/lights.js';
@@ -18,11 +17,11 @@ import { Loop }            from './systems/loop.js';
 import { gsap } from "gsap";
 import { initGame } from './game/init.js';
 import { Player, Level, Ennemy, musicANDsound } from './game/config.js';
-import { SoundGestion } from './game/sound.js';
-import { loadPM } from './components/playerModel.js';
+import { SoundGestion } from './systems/sound.js';
+import { loadPM } from './components/Model.js';
 import { playAnimation } from './game/animation.js';
 import { createProjectile } from './game/projectile.js';
-import { spawnEnnemy } from './game/ennemy.js';
+import { spawnEnnemy } from './game/game.js';
 import { generateAbris } from './game/abris.js';
 
 
@@ -46,13 +45,11 @@ vex.defaultOptions.contentClassName = contentClassName;
 class World {
 
   #camera
-  #controls
   #renderer
   #scene
   #loop
   #resizer
   #helpersLayer
-  #counter
   #cameraTransitionInProgress
   #light
 
@@ -62,21 +59,10 @@ class World {
     this.#renderer = createRenderer();
     this.#scene = createScene();
     this.#light = createLights(this.#scene);
-    this.#controls = createControls(this.#camera, this.#renderer.domElement);
-    //this.#resizer = new Resizer(container, this.#scene, this.#camera, this.#renderer);
     this.#loop = new Loop(this.#camera, this.#scene, this.#renderer);
-    this.#loop.addUpdatable(this.#controls);
     createKeyboard(container, this);
     this.#cameraTransitionInProgress = false;
-    
-    // Create the lights and hide the helpers layer
-    //this.#helpersLayer = 1;
-    //createLights(this.#scene, this.#helpersLayer);
     this.#camera.layers.enableAll();
-    //this.#camera.layers.toggle(this.#helpersLayer);
-  
-    // create entities in the scene
-    //createEntities(this.#scene, this.#renderer.domElement);
 
 
 
@@ -88,7 +74,6 @@ class World {
     const PM = await loadPM(this.#scene, this.#camera);
     this.#camera.lookAt(new THREE.Vector3(0, 18, -20));
     this.#camera.position.y = this.#camera.position.y -2;
-    console.log(this.#camera.position);
     this.#scene.add(PM[0][0]);
     this.#scene.add(PM[1][0]);
     PM[1][0].position.set(-4, 18.5, -5);
@@ -242,7 +227,6 @@ class World {
   }
 
   removeObjects() {
-    console.log(Level.loadingOjbects);
     Level.loadingOjbects.forEach(obj => this.#scene.remove(obj));
   }
 
@@ -282,11 +266,9 @@ class World {
   
   toggleHelpers() {
     this.#camera.layers.toggle(this.#helpersLayer);
-    console.log(this.#camera.layers);
   }
 
   changeCamera0() {
-    console.log("changeCamera0");
     if ( !this.#cameraTransitionInProgress) {
       this.#cameraTransitionInProgress = true;
       const self = this;
@@ -303,7 +285,6 @@ class World {
     }
   }
   changeCamera1() {
-    console.log("changeCamera1");
     if ( !this.#cameraTransitionInProgress) {
       this.#cameraTransitionInProgress = true;
       const self = this;
@@ -334,7 +315,6 @@ class World {
           }
       });
       Player.quelCamera = 2;
-      console.log(Player.quelCamera);
     }
   }
 
@@ -366,7 +346,6 @@ class World {
   invincible() {
     if (Level.started == true && !Level.paused && Level.tab[0].length > 0) { // Invincible
       Player.invincible = !Player.invincible;
-      console.log(Player.invincible);
       if (Player.invincible) {
         Player.projectilespeed = Player.projectilespeed * 2;
         Player.projectilesmaxPlayer = 10;
@@ -388,13 +367,15 @@ class World {
         Level.levelactuelle[k].splice(0, Level.levelactuelle[k].length);
       }
       spawnEnnemy(this.#scene, this.#camera);
-      document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
-      document.getElementById("level-container").style.display = "block";
-      Level.paused = true;
-      setTimeout(function() {
-        document.getElementById("level-container").style.display = "none";
-        Level.paused = false;
-      }, 2000);
+      if (Level.wave <= 5) {
+        document.getElementById("level-text").textContent = "LEVEL : " + (Level.wave);
+        document.getElementById("level-container").style.display = "block";
+        Level.paused = true;
+        setTimeout(function() {
+          document.getElementById("level-container").style.display = "none";
+          Level.paused = false;
+        }, 2000);
+      }
     }
   }
   restart() {
@@ -427,6 +408,10 @@ class World {
         heartImage.src = './src/medias/images/heart.png';
         heartsContainer.appendChild(heartImage);
       }
+
+      document.getElementById("level-container").style.display = "none";
+      document.getElementById("level-container").style.height = "8%";
+      document.getElementById("level-container").style.width = "25%";
       generateAbris(this.#scene);
     }
   }
@@ -435,11 +420,10 @@ class World {
     if (Level.started == true && !Level.paused && Level.tab[0].length > 0) {
       Level.paused = true;
       vex.dialog.alert({
-        message: "H: Affiche le menu d'aide \n I: vous rend invincible \n K: Tue tous les aliens \n A: recrée les abris \n S: coupe les sons \n M: coupe la musique \n Espace: tire \n Flèche directionnelle : se déplacé \n",
+        message: "H: Affiche le menu d'aide et met pause \n I: Vous rend invincible \n K: Tue tous les aliens \n A: Recrée les abris \n S: Coupe les sons \n M: Coupe la musique \n Espace: Tire \n Flèche directionnelle : Se déplacer \n G: Désactive le postProcessing",
         className: 'vex-theme-flat-attack', // Overwrites defaultOptions
         // add a oncallback function
         callback: function(value) {
-          console.log("test du callback");
           Level.paused = false;
         }
     })
@@ -461,13 +445,11 @@ class World {
   stopsound() {
     for(let sound in musicANDsound.soundeffectArray){
       musicANDsound.soundeffectArray[sound].toggleMute();
-      console.log(musicANDsound.soundeffectArray[sound].isMuted);
     }
   }
   stopmusic() {
     for(let sound in musicANDsound.musicArray){
       musicANDsound.musicArray[sound].toggleMute();
-      console.log(musicANDsound.musicArray[sound].isMuted);
     }
   }
 }

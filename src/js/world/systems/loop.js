@@ -35,27 +35,11 @@ class Loop {
 
     this.#composer = new EffectComposer(this.#renderer);
     this.#composer.addPass( new RenderPass(this.#scene, this.#camera) );
-    /*
-    const bloomEffect = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.5,
-      0.4,
-      0.85
-    );
-    const pixelrend = new RenderPixelatedPass({width: window.innerWidth, height: window.innerHeight}, 1, this.#scene, this.#camera)
-    this.#composer.addPass(pixelrend);
-    
-    this.#composer.addPass(bloomEffect);
-      */
 
 
     const glitcheffect = new GlitchPass();
     this.#composer.addPass(glitcheffect);
     this.#composer.passes[1].enabled = false;
-    //this.#composer.removePass(glitcheffect);
-    //console.log(this.#composer.passes);
-    //this.#composer.removePass(pixelrend);
-    //console.log(this.#composer.passes);
   }
 
   start() {
@@ -66,7 +50,6 @@ class Loop {
       this.tick();
       }
       // render a frame
-      //this.#renderer.render(this.#scene, this.#camera);
     });
   }
 
@@ -109,15 +92,12 @@ class Loop {
     
     // only call the getDelta function once per frame!
     const delta = this.#clock.getDelta(); 
-    //console.log(delta);
 
     timeElapse += delta;
-    if (Player.tookdamage === true) {
+    if (Player.tookdamage === true && Level.postProcess) {
        this.#composer.passes[1].enabled = true;
        this.#composer.passes[1].goWild = true;
-       console.log(this.#composer.passes[1]);
        setTimeout(() => {
-        console.log("eh oh faut marcher")
         this.#composer.passes[1].enabled = false;
         this.#composer.passes[1].goWild = false;
        }, 500);      
